@@ -935,7 +935,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
 
   (function team(){
     // Backend: Google Apps Script (google/apps-script.gs) desplegado como aplicación web. Pega aquí la URL /exec.
-    const SHEET_API = '__SHEET_API__';
+    const SHEET_API = 'https://script.google.com/macros/s/AKfycbx_vPF5igLudRladfnj68WJ4xvApX0DeHxDBRwsgtB1OIFbrtKHGkViSvES0SMHv_q8Ag/exec';
     if(!SHEET_API) return;
     const status=document.getElementById('teamstatus'), saveBtn=document.getElementById('save'), team=document.getElementById('team'), ans=document.getElementById('ans'), count=document.getElementById('teamcount'), reload=document.getElementById('reload'), nameEl=document.getElementById('nombre');
     team.hidden=false; saveBtn.hidden=false;
