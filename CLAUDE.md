@@ -11,7 +11,10 @@ desde adentro»: un recorrido de 15 pasos para que el equipo entienda la lógica
 reunión. El contenido sale del marco lógico versión 3.1 (Eduardo tiene el Word y el Markdown en su zip
 original `ecotonos-teoria-del-cambio.zip`, carpeta `docs/`; no están aquí).
 
-- `index.html` — la página completa. Es documento HTML entero (doctype, charset utf-8, viewport); las
+- `index.html` — la página completa. Desde el 27 oct 2026 tiene 16 pasos: el segundo es «En un minuto»
+  (`data-id="minuto"`), una balanza animada (parcela contra lote) que resume toda la lógica en cinco toques
+  con lenguaje llano; sus textos están en el arreglo `SUMCAP` del script. Pedido por Eduardo para enganchar
+  antes del recorrido largo. Es documento HTML entero (doctype, charset utf-8, viewport); las
   imágenes se cargan desde `img/` por ruta relativa. Funciona abierta como archivo local.
 - `img/` — ocho fotografías del proyecto (EURC, FONFIVE FI-2024-18) y de los talleres. Las de taller
   muestran caras reconocibles: antes de compartir fuera del equipo, confirmar que el grupo las acepta.

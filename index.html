@@ -234,6 +234,46 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .legend i.x{border-top-style:dashed;border-color:var(--fg-soft)}
 .small{font-size:.86rem;color:var(--fg-soft)}
 
+/* ───── en un minuto: la balanza ───── */
+.balanza{width:100%;max-width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--line);background:var(--bg-2);margin:10px 0 14px;overflow:visible}
+.balanza text{font-family:var(--f-body);font-weight:700;fill:var(--valley-ink)}
+.balanza .ease{transition:transform .9s cubic-bezier(.34,1.25,.5,1)}
+.balanza .beam{transform-box:view-box;transform-origin:400px 170px;transform:rotate(11deg)}
+.balanza .panL{transform:translateY(-50px)} .balanza .panR{transform:translateY(50px)}
+.balanza.b1 .beam{transform:rotate(7deg)} .balanza.b1 .panL{transform:translateY(-32px)} .balanza.b1 .panR{transform:translateY(32px)}
+.balanza.b2 .beam{transform:rotate(1deg)} .balanza.b2 .panL{transform:translateY(-5px)} .balanza.b2 .panR{transform:translateY(5px)}
+.balanza.b3 .beam{transform:rotate(-9deg)} .balanza.b3 .panL{transform:translateY(41px)} .balanza.b3 .panR{transform:translateY(-41px)}
+.balanza .viga{fill:var(--valley-ink)} .balanza .pivot{fill:var(--teal)} .balanza .knob{fill:var(--valley-ink)}
+.balanza .str{fill:none;stroke:var(--fg-soft);stroke-width:2}
+.balanza .dish{fill:var(--node);stroke:var(--line);stroke-width:2}
+.balanza .lbl{fill:var(--fg-soft);letter-spacing:.08em}
+.balanza .w{opacity:0;transform:translateY(-46px);transition:opacity .35s ease,transform .7s cubic-bezier(.3,1.5,.5,1);cursor:pointer}
+.balanza.b1 .w1,.balanza.b2 .w2,.balanza.b3 .w3{opacity:1;transform:none}
+.balanza .w rect{stroke:rgba(0,0,0,.08)}
+.balanza .w1 rect{fill:var(--amber)} .balanza .w1 text{fill:#1E2B27}
+.balanza .w2 rect{fill:var(--agua)} .balanza .w2 text{fill:#fff}
+.balanza .w3 rect{fill:var(--campo)} .balanza .w3 text{fill:#fff}
+.balanza .w .n{font-family:var(--f-display);font-size:17px}
+.balanza .w:hover rect{filter:brightness(1.08)}
+.balanza .tri{fill:var(--line);transition:fill .5s} .balanza .bar{fill:var(--valley-ink)}
+.balanza .base{cursor:pointer}
+.balanza .t6{fill:var(--teal);opacity:0;transition:opacity .5s}
+.balanza.b4 .tri{fill:var(--teal)} .balanza.b4 .t6{opacity:1}
+.balanza .gratis rect{fill:var(--node);stroke:#C0392B;stroke-width:1.5} .balanza .gratis text{fill:#C0392B}
+.balanza .gratis{transition:opacity .5s} .balanza .strike{stroke:#C0392B;stroke-width:3;opacity:0;transition:opacity .4s .3s}
+.balanza.b2 .gratis{opacity:.5} .balanza.b2 .strike{opacity:1}
+.balanza .hz{opacity:0;transition:opacity 1s} .balanza.b5 .hz{opacity:1}
+.balanza .hz path{fill:var(--cerro);opacity:.22} .balanza .hz .rio{fill:none;stroke:var(--agua);stroke-width:3;opacity:.5}
+.balanza .hz text{fill:var(--teal)}
+.sumcap{font-size:1.06rem;color:var(--fg);min-height:4.8em;max-width:62ch;margin:0 0 8px}
+.sumcap.pop{animation:pop .45s ease both}
+.sumcap b{font-family:var(--f-display);font-weight:650;color:var(--teal)}
+.sumsteps{display:flex;gap:6px;align-items:center;margin:0 0 10px}
+.sumsteps i{display:block;width:26px;height:6px;border-radius:3px;background:var(--line);transition:background .3s}
+.sumsteps i.on{background:var(--teal)}
+@media (max-width:560px){ .sumcap{font-size:.98rem;min-height:6.2em} }
+@media (prefers-reduced-motion:reduce){ .balanza *{transition:none!important} .sumcap{animation:none!important} }
+
 /* ───── bottom nav ───── */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--bg);border-top:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
 .nav .in{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1200px;margin:0 auto}
@@ -291,7 +331,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
   <div class="in">
     <div class="brand">Ecotonos · <span>Valle de Concá</span></div>
     <nav class="dots" id="dots" aria-label="Pasos"></nav>
-    <div class="counter" id="counter">1 / 15</div>
+    <div class="counter" id="counter">1 / 16</div>
     <button class="schemabtn" id="schemabtn" type="button" aria-pressed="false">Esquema completo</button>
   </div>
 </header>
@@ -315,6 +355,61 @@ h1,h2,h3{text-wrap:balance;margin:0}
         <button class="btn" type="button" data-go="next">Empezar →</button>
         <span class="hint">Avanza con <span class="kbd">→</span> o con el botón de abajo. El esquema completo está siempre arriba a la derecha, por si quieres verlo todo junto.</span>
       </div>
+    </section>
+
+    <!-- 0b En un minuto -->
+    <section class="step" data-id="minuto" data-title="En un minuto" data-beats="5">
+      <div class="eyebrow">En un minuto · toda la idea</div>
+      <h2>¿Qué pesa más: la parcela o el lote?</h2>
+      <svg class="balanza" id="balanza" viewBox="0 0 800 460" role="img" aria-label="Una balanza: de un lado la parcela, del otro el lote. Hoy el lote pesa más. El proyecto pone tres pesos del lado de la parcela y una base que sostiene la balanza, para que en 2045 el valle siga siendo valle">
+        <defs>
+          <pattern id="furrow2" width="800" height="7" patternUnits="userSpaceOnUse"><rect width="800" height="7" fill="#CFE3C3"/><line x1="0" y1="3.5" x2="800" y2="3.5" stroke="#9FC08E" stroke-width="1.5"/></pattern>
+        </defs>
+        <!-- horizonte 2045 -->
+        <g class="hz" aria-hidden="true">
+          <path d="M0 118 C 90 70, 180 48, 290 74 C 380 96, 470 52, 580 78 C 680 102, 740 92, 800 76 L 800 0 L 0 0 Z"/>
+          <path class="rio" d="M560 118 C 620 104, 700 112, 800 96"/>
+          <text x="772" y="42" text-anchor="end" font-size="19">2045 · el valle sigue siendo valle</text>
+        </g>
+        <!-- base: la mesa (6) -->
+        <g class="base" data-jump="c6">
+          <title>Pieza 6 · Conducción y custodia</title>
+          <path class="tri" d="M400 174 L 352 400 L 448 400 Z"/>
+          <rect class="bar" x="290" y="400" width="220" height="14" rx="5"/>
+          <text class="t6" x="400" y="446" text-anchor="middle" font-size="15">6 · una mesa que lleva el timón y cuida todo después de 2028</text>
+        </g>
+        <!-- viga -->
+        <g class="beam ease">
+          <rect class="viga" x="140" y="164" width="520" height="12" rx="6"/>
+          <circle class="knob" cx="140" cy="170" r="7"/><circle class="knob" cx="660" cy="170" r="7"/>
+          <circle class="pivot" cx="400" cy="170" r="12"/>
+        </g>
+        <!-- plato: la parcela -->
+        <g class="panL ease">
+          <path class="str" d="M140 176 L 46 334 M140 176 L 234 334"/>
+          <path class="dish" d="M36 334 L 244 334 L 228 356 L 52 356 Z"/>
+          <rect x="60" y="322" width="160" height="12" fill="url(#furrow2)"/>
+          <text class="lbl" x="140" y="384" text-anchor="middle" font-size="14">LA PARCELA</text>
+          <g class="w w1" data-jump="c1"><title>Pieza 1 · Valle conocido</title><rect x="40" y="286" width="200" height="34" rx="8"/><text class="n" x="54" y="309">1</text><text x="152" y="308" text-anchor="middle" font-size="13">se conoce y se quiere</text></g>
+          <g class="w w2" data-jump="c4"><title>Piezas 2, 3 y 4 · Vigilar y responder</title><rect x="30" y="248" width="220" height="34" rx="8"/><text class="n" x="42" y="271">2·3·4</text><text x="166" y="270" text-anchor="middle" font-size="13">la regla ya cuesta</text></g>
+          <g class="w w3" data-jump="c5"><title>Pieza 5 · Parcela que conviene</title><rect x="50" y="210" width="180" height="34" rx="8"/><text class="n" x="64" y="233">5</text><text x="150" y="232" text-anchor="middle" font-size="13">sembrar conviene</text></g>
+        </g>
+        <!-- plato: el lote -->
+        <g class="panR ease" data-jump="problema">
+          <title>El problema: brincarse las reglas sale gratis</title>
+          <path class="str" d="M660 176 L 566 334 M660 176 L 754 334"/>
+          <path class="dish" d="M556 334 L 764 334 L 748 356 L 572 356 Z"/>
+          <text class="lbl" x="660" y="384" text-anchor="middle" font-size="14">EL LOTE</text>
+          <g fill="#8E8A82" stroke="#5C5852" stroke-width="1"><rect x="586" y="296" width="150" height="6"/><rect x="586" y="296" width="6" height="38"/><rect x="730" y="296" width="6" height="38"/></g>
+          <rect x="690" y="306" width="40" height="28" fill="#E9DCC6" stroke="#B0764A" stroke-width="1.5"/><path d="M686 306 L 710 288 L 734 306 Z" fill="#B0764A"/>
+          <g transform="translate(600,258)"><rect x="0" y="0" width="84" height="26" fill="#FFF7E0" stroke="#8A5A1E" stroke-width="2"/><text x="42" y="18" font-size="13" text-anchor="middle" fill="#8A5A1E">SE VENDE</text><line x1="42" y1="26" x2="42" y2="38" stroke="#8A5A1E" stroke-width="3"/></g>
+          <g class="gratis"><rect x="596" y="222" width="130" height="28" rx="14"/><text x="661" y="241" font-size="14" text-anchor="middle">hoy sale gratis</text></g>
+          <line class="strike" x1="600" y1="236" x2="722" y2="236"/>
+        </g>
+      </svg>
+      <div class="sumsteps" id="sumsteps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="sumcap" id="sumcap"></p>
+      <p class="hint">Toca <span class="kbd">Siguiente</span> para ir poniendo cada peso. Después, el recorrido lo cuenta pieza por pieza, con nombres y fechas. Si tocas un peso, brincas directo a su pieza.</p>
     </section>
 
     <!-- 1 El valle -->
@@ -815,6 +910,20 @@ h1,h2,h3{text-wrap:balance;margin:0}
     });
   }
 
+  /* ───── en un minuto ───── */
+  const SUMCAP = [
+    '<b>Hoy.</b> Para muchas familias del valle, el lote pesa más que la parcela: vender deja dinero rápido, y brincarse las reglas sale gratis. Así, parcela por parcela, el valle se va volviendo lotes.',
+    '<b>Primer peso.</b> Que la gente sepa qué se puede y qué no en cada parte del valle, y que le tenga cariño. Quien conoce su valle, lo defiende.',
+    '<b>Segundo peso.</b> Que brincarse la regla deje de salir gratis: el ejido pone candados a la venta en cachitos, el municipio cobra y sanciona, y un reporte le llega a alguien que va, revisa y contesta.',
+    '<b>Tercer peso.</b> Que quedarse con la parcela deje más que venderla: menos predial, un mercado para la cosecha y apoyos para sembrar frutales. Con los dos pesos anteriores puestos, este es el que inclina la balanza.',
+    '<b>Y una base.</b> Una mesa donde se sientan el municipio, los ejidos, las dependencias y la gente; que lleva el timón, mide si funciona y deja cada cosa a cargo de alguien cuando se acabe el dinero del proyecto.',
+    '<b>Eso es todo.</b> La apuesta se resume en una frase: <em>el valle se cuida desde adentro</em>. Y si lo logramos, ponemos nuestra parte para que en 2045 el valle siga siendo valle: con sus parcelas regadas, su río, sus manantiales y su gente viviendo de ellos.'
+  ];
+  document.getElementById('balanza').addEventListener('click', e=>{
+    const t=e.target.closest('[data-jump]'); if(!t) return;
+    const k=steps.findIndex(x=>x.dataset.id===t.dataset.jump); if(k>=0) go(k,true);
+  });
+
   /* ───── steps ───── */
   const steps=Array.from(document.querySelectorAll('.step'));
   const state={i:0, beat:0, back:0};
@@ -824,7 +933,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
   const visuals=document.getElementById('visuals'), valleybox=document.getElementById('valleybox'), parcelbox=document.getElementById('parcelbox');
   const valley=document.getElementById('valley'), parcel=document.getElementById('parcel'), ecotext=document.getElementById('ecotext');
   steps.forEach((s,i)=>{ const b=document.createElement('button'); b.type='button'; b.title=s.dataset.title; b.setAttribute('aria-label',s.dataset.title); b.innerHTML='<i></i>'; b.addEventListener('click',()=>go(i,true)); dots.appendChild(b); });
-  function maxBeat(s){ let m=0; s.querySelectorAll('.beat').forEach(b=>{ m=Math.max(m,Number(b.dataset.beat)); }); return m; }
+  function maxBeat(s){ let m=Number(s.dataset.beats||0); s.querySelectorAll('.beat').forEach(b=>{ m=Math.max(m,Number(b.dataset.beat)); }); return m; }
 
   function placeVisual(){
     // park both visuals, then move the right one into the current step's slot
@@ -851,6 +960,10 @@ h1,h2,h3{text-wrap:balance;margin:0}
     s.querySelectorAll('.beat').forEach(b=>b.classList.toggle('on', Number(b.dataset.beat)<=state.beat));
     const big=s.querySelector('#bigprop'); if(big) big.classList.toggle('lit', state.beat>=2);
     if(s.dataset.visual==='parcel') applyParcel();
+    const bal=s.querySelector('#balanza');
+    if(bal){ ['b1','b2','b3','b4','b5'].forEach((c,k)=>bal.classList.toggle(c, state.beat>=k+1));
+      const cap=document.getElementById('sumcap'); cap.innerHTML=SUMCAP[Math.min(state.beat,SUMCAP.length-1)]; cap.classList.remove('pop'); void cap.offsetWidth; cap.classList.add('pop');
+      Array.from(document.getElementById('sumsteps').children).forEach((d,k)=>d.classList.toggle('on',k<=state.beat)); }
   }
   function restartMini(s){ const m=s.querySelector('.mini'); if(!m) return; const clone=m.cloneNode(true); clone.classList.remove('fail'); m.replaceWith(clone); const ft=s.querySelector('[data-failtext]'); if(ft) ft.hidden=true; const fb=s.querySelector('[data-fail]'); if(fb){ fb.classList.remove('on'); fb.textContent='¿Y si falla?'; } }
   function render(){
