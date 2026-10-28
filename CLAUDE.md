@@ -40,17 +40,19 @@ original `ecotonos-teoria-del-cambio.zip`, carpeta `docs/`; no están aquí).
 
 - Probado en Chromium (390 px) contra un backend simulado con la misma interfaz: imágenes cargan, sin
   errores de JS, guardar y releer funciona, guardar dos veces con el mismo id reemplaza y no duplica.
-- NO se ha probado contra el Apps Script real: la red de la sesión en la nube bloqueaba script.google.com.
-  Es lo primero que hay que hacer (ver pasos).
+- Probado contra el Apps Script real el 27 de octubre de 2026 desde la máquina de Eduardo (Claude Code de
+  escritorio, carpeta `/home/eduardo/Claude/Projects/ecotonos-teoria-del-cambio`, servida por http local):
+  GET devuelve `{ok:true, rows:[...]}` con CORS correcto; guardar desde la página funciona; guardar dos veces
+  desde el mismo navegador reemplaza en la lista y no duplica. Quedaron DOS filas de prueba en la hoja
+  (nombre «PRUEBA Claude (borrar)»): hay que borrarlas a mano en la hoja de Google.
 
 ## Lo que falta (en orden)
 
-1. Prueba real: abrir `index.html` en el navegador, ir al último paso, guardar una respuesta de prueba y
-   comprobar que aparece en la hoja y en la lista. Luego borrar la fila de prueba en la hoja. Si el POST
-   falla por CORS, revisar que la implementación del Apps Script tenga acceso «Cualquier persona» y que la
-   petición no lleve cabeceras personalizadas.
-2. Publicar: Eduardo crea un repositorio público vacío en su cuenta GitHub `eduardolusan-source`
-   (nombre acordado en principio: `ecotonos-teoria-del-cambio`). Luego:
+1. HECHO (27 oct 2026): la prueba real pasó. Falta solo borrar las dos filas «PRUEBA Claude (borrar)» en la
+   pestaña `respuestas` de la hoja de Google.
+2. Publicar: en la máquina de Eduardo `gh` ya está autenticado como `eduardolusan-source`, así que el repo
+   se puede crear y empujar desde aquí (`gh repo create ... --public --source . --push`). Nombre acordado:
+   `ecotonos-teoria-del-cambio`. A mano sería:
      git remote add origin https://github.com/eduardolusan-source/ecotonos-teoria-del-cambio.git
      git push -u origin main
    Activar Pages en Settings → Pages → Deploy from a branch → main / (root).
