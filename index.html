@@ -1132,6 +1132,8 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   const SHEET_API = 'https://script.google.com/macros/s/AKfycbx_vPF5igLudRladfnj68WJ4xvApX0DeHxDBRwsgtB1OIFbrtKHGkViSvES0SMHv_q8Ag/exec';
 
   // Fichas de los componentes (se abren con «Ahondar» y desde el esquema). Claves = data-open / data-comp.
+  // Campos opcionales: fcls ('valorar'|'vigilar'|'convenir'|'base' o una clase .frente propia), mapa (true, o la ruta de
+  // una imagen), mapaTitulo, mapaAlt, mapaNota.
   const COMP = {
     c1:{n:'1',name:'Valle conocido',frente:'Valorar',color:'var(--amber)',ink:'#1E2B27',
       enun:'El PMDU se conoce, la gente se lo apropia y las marcas hacen visible el valor del valle y sus cuatro ecotonos: agua, campo, cerro y pueblo.',
@@ -1150,7 +1152,7 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
       quien:'Comisariados de Concá y El Salitrillo; Laboratorio con servicio social de Derecho.',
       dinero:'Aprox. 7,500 MXN (pláticas, asambleas, viáticos al RAN).',
       feeds:'Alimenta al componente 5 (la parcela no se vende por partes) y al propósito: se detecta y responde.',
-      mapa:true},
+      mapa:true, mapaAlt:'Mapa del Área de Conservación Agrícola de Concá con sus distritos de riego', mapaNota:'Área de Conservación Agrícola, 455 ha, con los distritos de riego y el sistema de propuestas 1 a 6 alrededor. Fuente: EURC, FONFIVE FI-2024-18.'},
     c3:{n:'3',name:'Norma con consecuencias',frente:'Vigilar y responder',color:'var(--agua)',ink:'#fff',
       enun:'La norma municipal tiene consecuencias y una puerta para regularizarse.',
       entrega:['Tabulador de sanciones y licencias en la Ley de Ingresos 2027, turnado a la Legislatura antes del 30 de noviembre de 2026; cobro efectivo de licencias desde enero de 2027.','Plantillas de acta de verificación, apercibimiento y suspensión validadas por el jurídico (diciembre de 2026).','Padrón de licencias 2020 a 2026 y ventanilla semanal de orientación en la delegación de Concá (marzo de 2027).','Mapa de «dónde sí» construir para la familia local: Concá Norte, El Toril y los baldíos con servicios que propone el Plan Guía.','Polígonos de actuación del Plan Guía incorporados a la actualización del programa de centro de población de Concá.','Reglamento municipal de construcción como meta techo (diciembre de 2027).'],
@@ -1177,7 +1179,7 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
       quien:'Tesorería; Campus Concá (Licenciatura PAS); distritos de riego; Desarrollo Agropecuario de Arroyo Seco; SEDEA.',
       dinero:'Aprox. 18,500 MXN por gestionar con SEDEA, FAISPIAM o los propios programas.',
       feeds:'Recibe del 2 y del 3 (lotificar deja de ser salida fácil) y del 1 (vitrina en las marcas); entrega al propósito: conviene vivir de la agricultura.',
-      mapa:true},
+      mapa:true, mapaAlt:'Mapa del Área de Conservación Agrícola de Concá con sus distritos de riego', mapaNota:'Área de Conservación Agrícola, 455 ha, con los distritos de riego y el sistema de propuestas 1 a 6 alrededor. Fuente: EURC, FONFIVE FI-2024-18.'},
     c6:{n:'6',name:'Conducción y custodia',frente:'Base de los cinco',color:'var(--fg-soft)',ink:'#fff',
       enun:'El conjunto se conduce, se mide y se sostiene después de 2028.',
       entrega:['Mesa interinstitucional cada cuatro meses, tres sesiones al año (municipio, SEDESU, CONANP, PROFEPA, CONAGUA, comisariados, delegación, comunidad indígena, UAQ), con el Laboratorio como secretaría técnica; primera sesión con calendario en noviembre de 2026.','Plan de monitoreo: cada indicador con responsable y fecha; tablero semestral de una página.','Revisión de medio término en junio de 2027, entregada al equipo electo antes de que tome posesión.','Plan de custodia de marcas, apps, WhatsApp, formulario, padrón y vigías, firmado antes de marzo de 2028.','Gestión de fondos sobre la cartera de proyectos y el estudio económico-financiero del Plan Guía; propuesta de figura de gestión permanente del paisaje agrícola (septiembre de 2027).','Informe anual comunitario presentado en asamblea (febrero de 2028).'],
@@ -1222,8 +1224,12 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
     {id:'l-fin',from:'n-prop',to:'n-fin'},
     {id:'x13',from:'n-c1',to:'n-c4',cls:'x',side:true},{id:'x14',from:'n-c3',to:'n-c4',cls:'x',side:true},
     {id:'x25',from:'n-c2',to:'n-c5',cls:'x',side:true},{id:'x35',from:'n-c3',to:'n-c5',cls:'x',side:true},
-    {id:'b1',from:'n-c6',to:'n-c1'},{id:'b2',from:'n-c6',to:'n-c5'},{id:'b3',from:'n-c6',to:'n-c4'}
+    {id:'b1',from:'n-c6',to:'n-c1',base:true},{id:'b2',from:'n-c6',to:'n-c5',base:true},{id:'b3',from:'n-c6',to:'n-c4',base:true}
   ];
+  // Banderas de EDGES: cls:'x' = punteada (depende de) · side:true = sale por el costado · base:true = sube recta desde la
+  // pieza que sostiene · bus:true = sale por un carril lateral (para piezas apiladas en la columna del medio).
+  // En el ejemplo, las piezas 3 y 4 van por bus; se marca aquí para no tocar drawLinks.
+  EDGES.forEach(e=>{ if(e.from==='n-c3'||e.from==='n-c4'){ if(!e.cls) e.bus=true; } });
   const chain = document.getElementById('chain'), svg = document.getElementById('links');
   function box(el){ const r=el.getBoundingClientRect(), c=chain.getBoundingClientRect(); return {x:r.left-c.left+r.width/2, top:r.top-c.top, bottom:r.bottom-c.top, left:r.left-c.left, right:r.right-c.left, midY:r.top-c.top+r.height/2}; }
   function drawLinks(){
@@ -1234,8 +1240,8 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
       const A=box(a), B=box(b); let d; const sameCol=Math.abs(A.x-B.x)<8;
       if(e.side && sameCol){ const top=A.top<B.top?A:B, bot=A.top<B.top?B:A; d=`M${top.x+28} ${top.bottom} L ${bot.x+28} ${bot.top}`; }
       else if(e.side){ const fromRight=A.x<B.x; const x1=fromRight?A.right:A.left, x2=fromRight?B.left:B.right; const dx=(x2-x1)*0.5; d=`M${x1} ${A.midY} C ${x1+dx} ${A.midY}, ${x2-dx} ${B.midY}, ${x2} ${B.midY}`; }
-      else if(e.from==='n-c6'){ d=`M${B.x} ${A.top} L ${B.x} ${B.bottom}`; }
-      else if(e.from==='n-c3'||e.from==='n-c4'){ const bus=A.right+7, y1=A.midY, yEnd=B.bottom; d=`M${A.right} ${y1} L ${bus-6} ${y1} Q ${bus} ${y1} ${bus} ${y1-6} L ${bus} ${yEnd+10} Q ${bus} ${yEnd} ${bus-10} ${yEnd}`; }
+      else if(e.base){ d=`M${B.x} ${A.top} L ${B.x} ${B.bottom}`; }
+      else if(e.bus){ const bus=A.right+7, y1=A.midY, yEnd=B.bottom; d=`M${A.right} ${y1} L ${bus-6} ${y1} Q ${bus} ${y1} ${bus} ${y1-6} L ${bus} ${yEnd+10} Q ${bus} ${yEnd} ${bus-10} ${yEnd}`; }
       else { d=`M${A.x} ${A.top} C ${A.x} ${A.top-18}, ${B.x} ${B.bottom+18}, ${B.x} ${B.bottom}`; }
       const p=document.createElementNS('http://www.w3.org/2000/svg','path'); p.setAttribute('d',d); if(e.cls) p.classList.add(e.cls); svg.appendChild(p);
     });
@@ -1344,7 +1350,8 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   const drawer=document.getElementById('drawer'), scrim=document.getElementById('scrim'), body=document.getElementById('drawerbody'); let lastFocus=null;
   function openDrawer(key){
     const c=COMP[key]; if(!c) return; const li=a=>a.map(x=>`<li>${x}</li>`).join('');
-    const fcls=c.frente==='Valorar'?'valorar':c.frente==='Convenir'?'convenir':c.frente.startsWith('Vigilar')?'vigilar':'base';
+    const fcls=c.fcls||(c.frente==='Valorar'?'valorar':c.frente==='Convenir'?'convenir':c.frente.startsWith('Vigilar')?'vigilar':'base');
+    const mapaSrc=typeof c.mapa==='string'?c.mapa:'img/mapa-area-conservacion-agricola.jpg';
     body.innerHTML=`<div class="comp-head" style="margin-top:6px"><div class="badge" style="background:${c.color};color:${c.ink}">${c.n}</div><div class="frente ${fcls}">${c.frente}</div></div>
       <h3 style="margin-top:8px">${c.name}</h3><p class="enun">${c.enun}</p>
       <h4>Lo que entrega y queda funcionando</h4><ul>${li(c.entrega)}</ul>
@@ -1352,7 +1359,7 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
       <h4>Lo que tiene que ser cierto</h4><ul>${li(c.cierto)}</ul>
       <div class="meta"><div><b>Quién</b>${c.quien}</div><div><b>Dinero</b>${c.dinero}</div></div>
       <h4>En la cadena</h4><p style="margin:0;font-size:.95rem">${c.feeds}</p>
-      ${c.mapa?`<h4>El polígono</h4><img class="mapa" src="img/mapa-area-conservacion-agricola.jpg" alt="Mapa del Área de Conservación Agrícola de Concá con sus distritos de riego"><p class="note">Área de Conservación Agrícola, 455 ha, con los distritos de riego y el sistema de propuestas 1 a 6 alrededor. Fuente: EURC, FONFIVE FI-2024-18.</p>`:''}`;
+      ${c.mapa?`<h4>${c.mapaTitulo||'El polígono'}</h4><img class="mapa" src="${mapaSrc}" alt="${c.mapaAlt||'Mapa del proyecto'}"><p class="note">${c.mapaNota||''}</p>`:''}`;
     drawer.classList.add('on'); scrim.classList.add('on'); drawer.setAttribute('aria-hidden','false'); lastFocus=document.activeElement; drawer.scrollTop=0; document.getElementById('close').focus();
   }
   function closeDrawer(){ drawer.classList.remove('on'); scrim.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); if(lastFocus) lastFocus.focus(); }
