@@ -35,9 +35,10 @@ original `ecotonos-teoria-del-cambio.zip`, carpeta `docs/`; no están aquí).
   botón de pantalla completa, cadena corta en vertical.
 - Celular vertical: pila con visuales a todo lo ancho, barra de progreso, botón «Siguiente» grande, deslizar
   con el dedo para avanzar, ficha como hoja que sube desde abajo, y la balanza con números dentro y leyenda afuera.
-- Celular horizontal (alto ≤ 520 px): visual a la izquierda pegado arriba, texto a la derecha, todo compacto.
-  PENDIENTE: no se alcanzó a probar en el navegador; revisar primero. Tampoco se revisó el modo oscuro
-  después del cambio ni el paso del equipo en celular.
+- Celular horizontal (alto ≤ 520 px): visual a la izquierda, texto a la derecha, todo compacto.
+- Probado (27 oct 2026, Chromium emulado): pantalla 1366×768, celular 375×812 vertical y 812×375 horizontal,
+  claro y oscuro, incluido el paso del equipo leyendo la hoja. Ojo al probar con el panel del navegador oculto:
+  las animaciones CSS se detienen y las capturas salen desvanecidas; no es un error de la página.
 
 ## Cómo funciona la parte del equipo (último paso de la página)
 
