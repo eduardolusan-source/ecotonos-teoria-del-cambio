@@ -274,6 +274,171 @@ h1,h2,h3{text-wrap:balance;margin:0}
 @media (max-width:560px){ .sumcap{font-size:.98rem;min-height:6.2em} }
 @media (prefers-reduced-motion:reduce){ .balanza *{transition:none!important} .sumcap{animation:none!important} }
 
+/* ───── dos modos: celular y pantalla ─────
+   El <html> lleva data-mode="movil" o "pantalla" (elegido en la pantalla inicial, recordado en localStorage, forzable con ?modo=).
+   Cada paso tiene tres bloques: .head (título), .vis (lo que se ve) y .body (lo que se lee). En pantalla grande y en celular
+   horizontal se acomodan a dos columnas; en celular vertical se apilan y el visual sale a todo lo ancho. */
+.step>.head,.step>.vis,.step>.body{min-width:0}
+.step>.vis>:first-child{margin-top:0}
+.step>.vis>:last-child{margin-bottom:0}
+.step>.body>:first-child{margin-top:0}
+.step.tb>.body{margin-bottom:14px}
+.progress{height:3px;background:transparent;display:none}
+.progress i{display:block;height:100%;width:0;background:var(--teal);transition:width .35s ease}
+.modebtn,.fsbtn{border:1px solid var(--line);background:transparent;border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--fg-soft);flex:none}
+.modebtn:focus-visible,.fsbtn:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.fsbtn{display:none}
+html:not([data-mode="movil"]) .mb-phone{display:none}
+html[data-mode="movil"] .mb-screen{display:none}
+.sumlegend{display:none}
+
+/* el chooser */
+.chooser{position:fixed;inset:0;z-index:40;background:var(--bg);display:grid;place-items:center;padding:24px 16px;overflow:auto}
+.chooser-in{max-width:720px;width:100%;text-align:center}
+.chooser h2{font-family:var(--f-display);font-weight:550;font-size:clamp(1.7rem,4vw,2.6rem);margin:6px 0 10px}
+.chooser .small{max-width:48ch;margin:0 auto}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+@media (max-width:560px){.choices{grid-template-columns:1fr}}
+.choice{position:relative;border:1.5px solid var(--line);background:var(--node);border-radius:18px;padding:22px 18px 20px;cursor:pointer;text-align:center;display:grid;justify-items:center;gap:6px;color:var(--fg);transition:transform .15s,border-color .2s,box-shadow .2s}
+.choice svg{width:52px;height:52px;color:var(--teal);margin-bottom:4px}
+.choice b{font-family:var(--f-display);font-weight:650;font-size:1.2rem}
+.choice span{font-size:.9rem;color:var(--fg-soft);max-width:28ch}
+.choice .sug{position:absolute;top:10px;right:10px;font-style:normal;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--mint);color:var(--teal-deep);border-radius:999px;padding:3px 9px}
+.choice.sug-on{border-color:var(--teal);box-shadow:0 0 0 3px var(--mint)}
+.choice:hover{transform:translateY(-2px)}
+.choice:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+:root[data-theme="dark"] .choice .sug{color:var(--teal)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .choice .sug{color:var(--teal)} }
+
+/* ── PANTALLA: cada paso es una lámina a dos columnas, tipografía que crece con el ancho ── */
+html[data-mode="pantalla"]{font-size:clamp(15px,.55vw + 9px,21px)}
+html[data-mode="pantalla"] .fsbtn{display:grid}
+html[data-mode="pantalla"] .stage .in{max-width:min(1240px,94vw)}
+html[data-mode="pantalla"] .stage .in.wide{max-width:min(1240px,94vw)}
+html[data-mode="pantalla"] .stage{padding-block:22px 110px}
+html[data-mode="pantalla"] .step.cur:not(.one){display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);grid-template-rows:auto auto;grid-template-areas:"vis head" "vis body";column-gap:clamp(28px,4vw,64px);row-gap:0;align-content:center;min-height:calc(100vh - 56px - 22px - 110px)}
+html[data-mode="pantalla"] .step.cur:not(.one)>.head{grid-area:head;align-self:end}
+html[data-mode="pantalla"] .step.cur:not(.one)>.body{grid-area:body;align-self:start}
+html[data-mode="pantalla"] .step.cur:not(.one)>.vis{grid-area:vis;align-self:center}
+html[data-mode="pantalla"] .step.tb>.body{margin-bottom:0}
+html[data-mode="pantalla"] .step.one.cur{display:block}
+html[data-mode="pantalla"] .step h2{font-size:clamp(1.8rem,2.6vw,2.6rem)}
+html[data-mode="pantalla"] .step .lede{font-size:1.12rem;max-width:none}
+html[data-mode="pantalla"] .big{font-size:clamp(1.35rem,2vw,1.9rem);max-width:none}
+html[data-mode="pantalla"] .cover{min-height:min(68vh,640px)}
+html[data-mode="pantalla"] .cover .txt{padding:36px 40px}
+html[data-mode="pantalla"] .cover h1{font-size:clamp(2.4rem,4.6vw,4.2rem)}
+html[data-mode="pantalla"] .cover p{font-size:1.1rem;max-width:56ch}
+html[data-mode="pantalla"] .vis .photo,html[data-mode="pantalla"] .vis .valley,html[data-mode="pantalla"] .vis .parcel,html[data-mode="pantalla"] .vis .balanza{margin-block:0}
+html[data-mode="pantalla"] .vis .photo img{max-height:min(62vh,720px);object-fit:cover}
+html[data-mode="pantalla"] .facts{grid-template-columns:1fr}
+html[data-mode="pantalla"] .fact{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+html[data-mode="pantalla"] .fact .d{margin-top:0;font-size:.88rem}
+html[data-mode="pantalla"] .chain{max-width:860px}
+html[data-mode="pantalla"] .sumcap{font-size:1.15rem;min-height:5.4em}
+html[data-mode="pantalla"] .sups{grid-template-columns:1fr 1fr}
+html[data-mode="pantalla"] .drawer{width:min(640px,100%)}
+/* la cadena corta se vuelve vertical cuando vive en la columna del visual */
+html[data-mode="pantalla"] .vis .mini{grid-template-columns:1fr;margin:0 0 14px}
+html[data-mode="pantalla"] .vis .marrow{width:2px;height:26px;margin:0 auto;transform-origin:top center;animation-name:growy}
+html[data-mode="pantalla"] .vis .marrow::after{right:-4px;top:auto;bottom:-2px;border:5px solid transparent;border-top-color:var(--teal)}
+html[data-mode="pantalla"] .vis .mini.fail .marrow::after{border-left-color:transparent;border-top-color:#C0392B}
+html[data-mode="pantalla"] .vis .mnode{font-size:.92rem;padding:12px 14px}
+html[data-mode="pantalla"] .vis .mnode b{font-size:1.05rem}
+html[data-mode="pantalla"] .vis .failtext{margin:0}
+/* una pantalla grande pero vertical (ventana angosta): se apila como el celular */
+@media (max-width:820px){
+  html[data-mode="pantalla"] .step.cur:not(.one){display:block;min-height:0}
+  html[data-mode="pantalla"] .vis .mini{margin:4px 0 20px}
+  html[data-mode="pantalla"] .facts{grid-template-columns:repeat(3,1fr)}
+  html[data-mode="pantalla"] .fact{display:block}
+}
+
+/* ── CELULAR ── */
+html[data-mode="movil"] .progress{display:block}
+html[data-mode="movil"] .dots{display:none}
+html[data-mode="movil"] .top .in{justify-content:space-between;gap:8px}
+html[data-mode="movil"] .brand{min-width:0;overflow:hidden;text-overflow:ellipsis;flex:1}
+html[data-mode="movil"] .schemabtn{padding:6px 10px;flex:none}
+html[data-mode="movil"] .schemabtn .long{display:none}
+html[data-mode="movil"] .counter{display:none}
+html[data-mode="movil"] .nav .in{gap:8px}
+html[data-mode="movil"] .nav .mid{display:none}
+html[data-mode="movil"] .nbtn{padding:12px 16px;font-size:1rem}
+html[data-mode="movil"] .nbtn.next{flex:1;justify-content:center}
+html[data-mode="movil"] .nbtn.prev{padding-inline:14px}
+html[data-mode="movil"] .nav{padding-block:10px calc(12px + env(safe-area-inset-bottom,0px))}
+html[data-mode="movil"] .btn{padding:13px 22px}
+html[data-mode="movil"] .fbtn,html[data-mode="movil"] .ecobtn{padding:9px 14px;font-size:.9rem}
+html[data-mode="movil"] .drawer{top:auto;left:0;right:0;bottom:0;width:100%;max-height:88vh;border-radius:20px 20px 0 0;transform:translateY(102%);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+html[data-mode="movil"] .drawer.on{transform:none}
+html[data-mode="movil"] .drawer::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 6px}
+html[data-mode="movil"] .valley text{font-size:19px}
+html[data-mode="movil"] .valley text[font-size="11"]{font-size:16px}
+html[data-mode="movil"] .parcel text[font-size="12"]{font-size:17px}
+html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
+/* celular vertical: pila, visuales a todo lo ancho */
+@media (orientation:portrait), (max-width:600px){
+  html[data-mode="movil"] .stage{padding-block:18px 108px}
+  html[data-mode="movil"] .step h2{font-size:clamp(1.5rem,6.4vw,2rem)}
+  html[data-mode="movil"] .step>.vis{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px))) calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+  html[data-mode="movil"] .step>.vis .balanza,html[data-mode="movil"] .step>.vis .valley,html[data-mode="movil"] .step>.vis .parcel,html[data-mode="movil"] .step>.vis .photo{border-radius:0;border-left:0;border-right:0}
+  html[data-mode="movil"] .step>.vis .photo{margin:6px 0 14px}
+  html[data-mode="movil"] .step>.vis .ecobtns,html[data-mode="movil"] .step>.vis .ecotext,html[data-mode="movil"] .step>.vis .mini,html[data-mode="movil"] .step>.vis .failtext,html[data-mode="movil"] .step>.vis .rows,html[data-mode="movil"] .step>.vis .sups,html[data-mode="movil"] .step>.vis .hint{margin-inline:max(16px,env(safe-area-inset-left,0px))}
+  html[data-mode="movil"] .step>.vis .ecofig{margin-inline:0}
+  html[data-mode="movil"] .step>.vis .cover{border-radius:0;min-height:min(78vh,620px)}
+  /* la balanza en vertical: números grandes dentro, palabras afuera */
+  html[data-mode="movil"] .balanza .w text{display:none}
+  html[data-mode="movil"] .balanza .w text.n{display:block;font-size:26px}
+  html[data-mode="movil"] .balanza .w1 text.n{transform:translate(64px,4px)} html[data-mode="movil"] .balanza .w2 text.n{transform:translate(56px,4px)} html[data-mode="movil"] .balanza .w3 text.n{transform:translate(72px,4px)}
+  html[data-mode="movil"] .balanza .lbl{font-size:22px}
+  html[data-mode="movil"] .balanza .gratis text{font-size:19px} html[data-mode="movil"] .balanza .gratis rect{x:580px;width:162px;height:34px;y:218px} html[data-mode="movil"] .balanza .strike{x1:584px;x2:738px}
+  html[data-mode="movil"] .balanza .t6{display:none}
+  html[data-mode="movil"] .balanza .hz text{font-size:24px}
+  html[data-mode="movil"] .sumlegend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+  html[data-mode="movil"] .sumlegend button{border:1.5px solid var(--line);background:var(--node);border-radius:12px;padding:8px 10px;font:inherit;font-size:.86rem;color:var(--fg);text-align:left;display:flex;gap:8px;align-items:center;opacity:.45;transition:opacity .3s,border-color .3s;cursor:pointer}
+  html[data-mode="movil"] .sumlegend button.on{opacity:1;border-color:var(--k)}
+  html[data-mode="movil"] .sumlegend b{font-family:var(--f-display);background:var(--k);color:#fff;border-radius:7px;padding:2px 7px;font-size:.82rem;white-space:nowrap}
+  html[data-mode="movil"] .sumlegend button[data-jump="c1"] b{color:#1E2B27}
+  html[data-mode="movil"] .sumsteps{margin-top:10px}
+  html[data-mode="movil"] .sumcap{min-height:0}
+}
+/* celular horizontal: visual a la izquierda, texto a la derecha, todo más compacto */
+@media (orientation:landscape) and (max-height:520px){
+  html[data-mode="movil"]{font-size:15px}
+  html[data-mode="movil"] .top .in{height:42px}
+  html[data-mode="movil"] .stage{padding-block:12px 70px}
+  html[data-mode="movil"] .stage .in,html[data-mode="movil"] .stage .in.wide{max-width:none}
+  html[data-mode="movil"] .step.cur:not(.one){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;grid-template-areas:"vis head" "vis body";column-gap:20px;align-content:start}
+  html[data-mode="movil"] .step.cur:not(.one)>.head{grid-area:head}
+  html[data-mode="movil"] .step.cur:not(.one)>.body{grid-area:body}
+  html[data-mode="movil"] .step.cur:not(.one)>.vis{grid-area:vis;align-self:start;position:sticky;top:54px}
+  html[data-mode="movil"] .step h2{font-size:1.35rem;margin:4px 0 8px}
+  html[data-mode="movil"] .step .lede{font-size:.98rem}
+  html[data-mode="movil"] .big{font-size:1.15rem}
+  html[data-mode="movil"] .cover{min-height:min(70vh,360px)}
+  html[data-mode="movil"] .cover h1{font-size:2rem}
+  html[data-mode="movil"] .vis .photo img{max-height:62vh;object-fit:cover}
+  html[data-mode="movil"] .vis .photo,html[data-mode="movil"] .vis .valley,html[data-mode="movil"] .vis .parcel,html[data-mode="movil"] .vis .balanza{margin-block:0}
+  html[data-mode="movil"] .vis .mini{grid-template-columns:1fr;margin:0 0 10px;gap:6px}
+  html[data-mode="movil"] .vis .marrow{width:2px;height:18px;margin:0 auto;transform-origin:top center;animation-name:growy}
+  html[data-mode="movil"] .vis .marrow::after{right:-4px;top:auto;bottom:-2px;border:5px solid transparent;border-top-color:var(--teal)}
+  html[data-mode="movil"] .vis .mini.fail .marrow::after{border-left-color:transparent;border-top-color:#C0392B}
+  html[data-mode="movil"] .vis .failtext{margin:0}
+  html[data-mode="movil"] .facts{grid-template-columns:1fr;gap:6px}
+  html[data-mode="movil"] .fact{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:8px 10px}
+  html[data-mode="movil"] .fact .d{margin-top:0}
+  html[data-mode="movil"] .sups{grid-template-columns:1fr}
+  html[data-mode="movil"] .nav{padding-block:6px calc(6px + env(safe-area-inset-bottom,0px))}
+  html[data-mode="movil"] .nbtn{padding:8px 14px;font-size:.9rem}
+  html[data-mode="movil"] .nbtn.next{flex:none}
+  html[data-mode="movil"] .nav .mid{display:block}
+  html[data-mode="movil"] .sumcap{font-size:.95rem;min-height:0}
+  html[data-mode="movil"] .drawer{top:0;max-height:none;border-radius:0;width:min(520px,100%);left:auto;transform:translateX(102%);box-shadow:-10px 0 40px rgba(0,0,0,.18)}
+  html[data-mode="movil"] .drawer::before{display:none}
+  html[data-mode="movil"] .balanza .w text{font-size:15px} html[data-mode="movil"] .balanza .w .n{font-size:18px}
+}
+
 /* ───── bottom nav ───── */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--bg);border-top:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
 .nav .in{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1200px;margin:0 auto}
@@ -333,15 +498,19 @@ h1,h2,h3{text-wrap:balance;margin:0}
     <nav class="dots" id="dots" aria-label="Pasos"></nav>
     <div class="counter" id="counter">1 / 16</div>
     <button class="schemabtn" id="schemabtn" type="button" aria-pressed="false">Esquema completo</button>
+    <button class="modebtn" id="modebtn" type="button" title="Cambiar entre celular y pantalla" aria-label="Cambiar entre celular y pantalla"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect class="mb-screen" x="2" y="4" width="20" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path class="mb-screen" d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.8" fill="none"/><rect class="mb-phone" x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle class="mb-phone" cx="12" cy="18.5" r="1" fill="currentColor"/></svg></button>
+    <button class="fsbtn" id="fsbtn" type="button" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   </div>
+  <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 </header>
 
 <main class="stage">
   <div class="in" id="stagein">
 
     <!-- 0 Portada -->
-    <section class="step" data-id="inicio" data-title="Inicio">
-      <div class="cover">
+    <section class="step one" data-id="inicio" data-title="Inicio">
+      <div class="vis">
+        <div class="cover">
         <img src="img/portada-valle-cerro-de-la-cruz.jpg" alt="El valle de Concá visto desde el cerro de la Cruz, con el pueblo y las parcelas al atardecer">
         <div class="veil"></div>
         <div class="txt">
@@ -351,17 +520,23 @@ h1,h2,h3{text-wrap:balance;margin:0}
           <p style="font-family:var(--f-display);font-style:italic;color:var(--amber);margin-top:12px">El valle es de quien lo cuida.</p>
         </div>
       </div>
-      <div class="row">
+      </div>
+      <div class="body">
+        <div class="row">
         <button class="btn" type="button" data-go="next">Empezar →</button>
         <span class="hint">Avanza con <span class="kbd">→</span> o con el botón de abajo. El esquema completo está siempre arriba a la derecha, por si quieres verlo todo junto.</span>
+      </div>
       </div>
     </section>
 
     <!-- 0b En un minuto -->
     <section class="step" data-id="minuto" data-title="En un minuto" data-beats="5">
-      <div class="eyebrow">En un minuto · toda la idea</div>
+      <div class="head">
+        <div class="eyebrow">En un minuto · toda la idea</div>
       <h2>¿Qué pesa más: la parcela o el lote?</h2>
-      <svg class="balanza" id="balanza" viewBox="0 0 800 460" role="img" aria-label="Una balanza: de un lado la parcela, del otro el lote. Hoy el lote pesa más. El proyecto pone tres pesos del lado de la parcela y una base que sostiene la balanza, para que en 2045 el valle siga siendo valle">
+      </div>
+      <div class="vis">
+        <svg class="balanza" id="balanza" viewBox="0 0 800 460" role="img" aria-label="Una balanza: de un lado la parcela, del otro el lote. Hoy el lote pesa más. El proyecto pone tres pesos del lado de la parcela y una base que sostiene la balanza, para que en 2045 el valle siga siendo valle">
         <defs>
           <pattern id="furrow2" width="800" height="7" patternUnits="userSpaceOnUse"><rect width="800" height="7" fill="#CFE3C3"/><line x1="0" y1="3.5" x2="800" y2="3.5" stroke="#9FC08E" stroke-width="1.5"/></pattern>
         </defs>
@@ -407,45 +582,71 @@ h1,h2,h3{text-wrap:balance;margin:0}
           <line class="strike" x1="600" y1="236" x2="722" y2="236"/>
         </g>
       </svg>
-      <div class="sumsteps" id="sumsteps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p class="sumcap" id="sumcap"></p>
+      </div>
+      <div class="body">
+        <div class="sumsteps" id="sumsteps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="sumlegend" id="sumlegend" aria-hidden="true">
+          <button type="button" data-jump="c1" style="--k:var(--amber)"><b>1</b>se conoce y se quiere</button>
+          <button type="button" data-jump="c4" style="--k:var(--agua)"><b>2·3·4</b>la regla ya cuesta</button>
+          <button type="button" data-jump="c5" style="--k:var(--campo)"><b>5</b>sembrar conviene</button>
+          <button type="button" data-jump="c6" style="--k:var(--teal)"><b>6</b>una mesa que sostiene</button>
+        </div>
+        <p class="sumcap" id="sumcap"></p>
       <p class="hint">Toca <span class="kbd">Siguiente</span> para ir poniendo cada peso. Después, el recorrido lo cuenta pieza por pieza, con nombres y fechas. Si tocas un peso, brincas directo a su pieza.</p>
+      </div>
     </section>
 
     <!-- 1 El valle -->
     <section class="step" data-id="valle" data-title="El valle y sus ecotonos" data-visual="valley" data-valley="eco">
-      <div class="eyebrow">1 · El lugar</div>
+      <div class="head">
+        <div class="eyebrow">1 · El lugar</div>
       <h2>Un valle de riego metido en la Sierra, con bordes que se tocan</h2>
-      <div data-slot="visual"></div>
-      <p class="lede">Un ecotono es la orilla donde se juntan dos mundos: el agua con las parcelas, las parcelas con el pueblo, el campo con el cerro. Esas orillas son las que mantienen amarrado al valle, y son lo primero que se pierde cuando el crecimiento va sin orden.</p>
+      </div>
+      <div class="vis">
+        <div data-slot="visual"></div>
+      </div>
+      <div class="body">
+        <p class="lede">Un ecotono es la orilla donde se juntan dos mundos: el agua con las parcelas, las parcelas con el pueblo, el campo con el cerro. Esas orillas son las que mantienen amarrado al valle, y son lo primero que se pierde cuando el crecimiento va sin orden.</p>
       <div class="facts">
         <div class="fact"><div class="n">455</div><div class="d">hectáreas de riego que la propia gente marcó como las que hay que cuidar</div></div>
         <div class="fact"><div class="n">5</div><div class="d">distritos de riego, cada uno con su acequia y su gente: Acequia Madre, Los Limones, San Isidro, El Abanico-El Salitrillo, La Vega</div></div>
         <div class="fact"><div class="n">6</div><div class="d">propuestas para los bordes del valle, salidas de los tres talleres (EURC, 2024–2026)</div></div>
       </div>
       <p class="hint">De dónde sale esto: el proyecto Ecotonos urbanos y rurales (FONFIVE FI-2024-18) y el Plan Guía 2045.</p>
+      </div>
     </section>
 
     <!-- 2 El problema -->
     <section class="step" data-id="problema" data-title="El problema" data-visual="parcel">
-      <div class="eyebrow">2 · El problema</div>
+      <div class="head">
+        <div class="eyebrow">2 · El problema</div>
       <h2>Hoy, brincarse las reglas sale gratis</h2>
-      <div data-slot="visual"></div>
-      <p class="lede">El plan municipal (el PMDU) ya dice qué se puede construir en cada parte del valle y qué no. Lo que falta es que la gente lo sepa, que alguien lo haga valer y que responda a tiempo.</p>
+      </div>
+      <div class="vis">
+        <div data-slot="visual"></div>
+      </div>
+      <div class="body">
+        <p class="lede">El plan municipal (el PMDU) ya dice qué se puede construir en cada parte del valle y qué no. Lo que falta es que la gente lo sepa, que alguien lo haga valer y que responda a tiempo.</p>
       <div class="cards">
         <div class="card prob beat" data-beat="1"><h3>Las casas se van comiendo las parcelas</h3><p>Una lotificación empieza con una barda, no con un techo. Para cuando hay techo ya es tarde, y nadie quiere ser el vecino que fue a acusar.</p></div>
         <div class="card prob beat" data-beat="2"><h3>Nadie lleva el timón</h3><p>No hay una mesa donde el municipio, los ejidos, las dependencias y la gente se sienten a decidir juntos; cada cambio de uso se arregla predio por predio.</p></div>
         <div class="card prob beat" data-beat="3"><h3>Hay reglas, pero no pasa nada si no se cumplen</h3><p>Las licencias de construcción no se cobran, no hay quién vaya a verificar, y si alguien reporta, el reporte no tiene a dónde llegar.</p></div>
       </div>
       <p class="hint beat" data-beat="3">De aquí sale la apuesta. Sigue →</p>
+      </div>
     </section>
 
     <!-- 3 La apuesta -->
     <section class="step" data-id="apuesta" data-title="La apuesta">
-      <div class="eyebrow">3 · La apuesta (el propósito)</div>
+      <div class="head">
+        <div class="eyebrow">3 · La apuesta (el propósito)</div>
       <h2>Lo que sí nos toca mover en dos años</h2>
-      <figure class="photo"><img src="img/taller-grupo-dibujando-mapa.jpg" alt="Vecinas y vecinos de Concá dibujando sobre un mapa grande del valle en un taller"><figcaption>De aquí sale: tres talleres con la gente del valle marcando sobre el mapa qué cuidar y por dónde crecer.</figcaption></figure>
-      <p class="big" id="bigprop">El valle se cuida desde adentro: su gente <span class="v1">conoce y valora sus ecotonos</span>, <span class="v2">conviene vivir de la agricultura</span>, y los cambios irregulares de uso de suelo <span class="v3">se detectan antes de consolidarse y reciben respuesta de la autoridad</span>.</p>
+      </div>
+      <div class="vis">
+        <figure class="photo"><img src="img/taller-grupo-dibujando-mapa.jpg" alt="Vecinas y vecinos de Concá dibujando sobre un mapa grande del valle en un taller"><figcaption>De aquí sale: tres talleres con la gente del valle marcando sobre el mapa qué cuidar y por dónde crecer.</figcaption></figure>
+      </div>
+      <div class="body">
+        <p class="big" id="bigprop">El valle se cuida desde adentro: su gente <span class="v1">conoce y valora sus ecotonos</span>, <span class="v2">conviene vivir de la agricultura</span>, y los cambios irregulares de uso de suelo <span class="v3">se detectan antes de consolidarse y reciben respuesta de la autoridad</span>.</p>
       <div class="beat" data-beat="2"><p class="hint">Tres verbos, tres frentes de trabajo:</p></div>
       <div class="cards beat" data-beat="3">
         <div class="card" style="border-left:5px solid var(--amber)"><h3>Valorar</h3><p>Que la gente sepa las reglas y le tenga cariño al valle. Componente 1.</p></div>
@@ -453,18 +654,24 @@ h1,h2,h3{text-wrap:balance;margin:0}
         <div class="card" style="border-left:5px solid var(--campo)"><h3>Convenir</h3><p>Que quedarse con la parcela convenga más que venderla. Componente 5.</p></div>
       </div>
       <p class="hint beat" data-beat="3">Y un sexto componente que sostiene a los otros cinco: alguien tiene que llevar el timón y cuidar lo que se construya.</p>
+      </div>
     </section>
 
     <!-- 4 C1 -->
     <section class="step" data-id="c1" data-title="Componente 1 · Valle conocido" data-comp="c1">
-      <div class="comp-head"><div class="badge" style="background:var(--amber);color:#1E2B27">1</div><div><div class="frente valorar">Valorar</div><h2 style="margin:0">Valle conocido</h2></div></div>
-      <div class="mini" style="--c:var(--amber)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--amber);color:#1E2B27">1</div><div><div class="frente valorar">Valorar</div><h2 style="margin:0">Valle conocido</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--amber)">
         <div class="mnode me"><b>1 · Valle conocido</b>campaña del PMDU y marcas en los ecotonos</div><div class="marrow"></div>
         <div class="mnode"><b>Valorar</b>conocer las reglas y querer el valle</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b>su gente <span class="v1 lit" style="border-color:var(--amber)">conoce y valora</span> sus ecotonos</div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 1 falla,</b> nadie sabe qué está prohibido ni dónde: «conoce y valora» se apaga, al 4 le llegan pocos reportes y mal ubicados, y las mojoneras que le ponen cara a los candados del 2 y a las reglas del 3 nunca existen.</p>
-      <p class="lede">Que la gente sepa qué se puede y qué no en cada parte del valle, y que le tenga cariño: para eso la campaña del PMDU y las marcas en los bordes.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que la gente sepa qué se puede y qué no en cada parte del valle, y que le tenga cariño: para eso la campaña del PMDU y las marcas en los bordes.</p>
       <ul class="entrega" style="--c:var(--amber)">
         <li>Campaña en 3 canales y 10 puntos (la delegación, la plaza, la telesecundaria, el campus, las tiendas) con la lona del Plan Guía como pieza central; un mapa en el celular para preguntar «¿esto se puede aquí?»; sesiones con las comunidades y el ejido. Marzo de 2027.</li>
         <li>Unas 20 marcas con código QR en los seis bordes del valle; seis de ellas son mojoneras con el texto de la zonificación, firmadas por el municipio y el ejido. Febrero de 2028.</li>
@@ -472,18 +679,24 @@ h1,h2,h3{text-wrap:balance;margin:0}
       </ul>
       <div class="feeds">También le sirve al <span class="chip c4">4 Reporte y vigías</span>: la gente confía y sabe reportar, y cada marca trae un QR que lleva al formulario.</div>
       <div class="row"><button class="btn ghost" type="button" data-open="c1">Ahondar en el componente 1</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 5 C2 -->
     <section class="step" data-id="c2" data-title="Componente 2 · Ejido corresponsable" data-comp="c2">
-      <div class="comp-head"><div class="badge" style="background:var(--agua)">2</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Ejido corresponsable</h2></div></div>
-      <div class="mini" style="--c:var(--agua)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--agua)">2</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Ejido corresponsable</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--agua)">
         <div class="mnode me"><b>2 · Ejido corresponsable</b>reglamentos internos con tres candados</div><div class="marrow"></div>
         <div class="mnode"><b>Vigilar y responder</b>infringir deja de ser gratis</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b>los cambios irregulares <span class="v3 lit" style="border-color:var(--agua)">se detectan y reciben respuesta</span></div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 2 falla,</b> en tierra ejidal la asamblea sigue dando dominio pleno y la parcela se vende en cachitos: «se detecta y responde» queda cojo del lado ejidal, y el 5 se queda sin piso porque lotificar sigue siendo la salida fácil.</p>
-      <p class="lede">Que el ejido ponga su parte: la mitad ejidal de la prohibición de lotificar que pidió la propuesta síntesis del EURC.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que el ejido ponga su parte: la mitad ejidal de la prohibición de lotificar que pidió la propuesta síntesis del EURC.</p>
       <ul class="entrega" style="--c:var(--agua)">
         <li>Reglamento interno del ejido de Concá con tres candados: nada de dominio pleno dentro del polígono, toda cesión de derechos pasa por la asamblea y respeta el derecho del tanto, y la zona de urbanización solo crece si la asamblea lo aprueba con el mapa enfrente. Asamblea en febrero de 2027.</li>
         <li>El mismo reglamento en El Salitrillo, en marzo de 2027.</li>
@@ -491,18 +704,24 @@ h1,h2,h3{text-wrap:balance;margin:0}
       </ul>
       <div class="feeds">También le sirve al <span class="chip c5">5 Parcela que conviene</span>: la parcela ya no se puede vender en cachitos.</div>
       <div class="row"><button class="btn ghost" type="button" data-open="c2">Ahondar en el componente 2</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 6 C3 -->
     <section class="step" data-id="c3" data-title="Componente 3 · Norma con consecuencias" data-comp="c3">
-      <div class="comp-head"><div class="badge" style="background:var(--agua)">3</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Norma con consecuencias</h2></div></div>
-      <div class="mini" style="--c:var(--agua)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--agua)">3</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Norma con consecuencias</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--agua)">
         <div class="mnode me"><b>3 · Norma con consecuencias</b>tabulador, licencias cobradas, ventanilla</div><div class="marrow"></div>
         <div class="mnode"><b>Vigilar y responder</b>infringir deja de ser gratis</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b>los cambios irregulares <span class="v3 lit" style="border-color:var(--agua)">se detectan y reciben respuesta</span></div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 3 falla,</b> la verificadora no tiene formatos, ni tabulador, ni sueldo: el 4 detecta pero no puede responder, el 5 pierde el descuento en el predial, y «se detecta y responde» se apaga en la parte de responder.</p>
-      <p class="lede">Que el municipio tenga con qué responder, y que haya una puerta para ponerse en regla: la mitad privada de la misma prohibición.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que el municipio tenga con qué responder, y que haya una puerta para ponerse en regla: la mitad privada de la misma prohibición.</p>
       <ul class="entrega" style="--c:var(--agua)">
         <li>Tabulador de multas y licencias en la Ley de Ingresos 2027, mandado a la Legislatura antes del 30 de noviembre de 2026; desde enero las licencias sí se cobran.</li>
         <li>Formatos de acta, apercibimiento y suspensión; una ventanilla en la delegación un día a la semana para orientar, y un mapa de «dónde sí» se puede construir. Marzo de 2027.</li>
@@ -510,18 +729,24 @@ h1,h2,h3{text-wrap:balance;margin:0}
       </ul>
       <div class="feeds">También le sirve al <span class="chip c4">4</span> (hay qué aplicar y con qué pagarle a la verificadora) y al <span class="chip c5">5</span> (el descuento al predial va en la misma ley).</div>
       <div class="row"><button class="btn ghost" type="button" data-open="c3">Ahondar en el componente 3</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 7 C4 -->
     <section class="step" data-id="c4" data-title="Componente 4 · Reporte y vigías" data-comp="c4">
-      <div class="comp-head"><div class="badge" style="background:var(--agua)">4</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Reporte y vigías</h2></div></div>
-      <div class="mini" style="--c:var(--agua)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--agua)">4</div><div><div class="frente vigilar">Vigilar y responder</div><h2 style="margin:0">Reporte y vigías</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--agua)">
         <div class="mnode me"><b>4 · Reporte y vigías</b>protocolo municipal y red de vigías por ecotono</div><div class="marrow"></div>
         <div class="mnode"><b>Vigilar y responder</b>infringir deja de ser gratis</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b>los cambios irregulares <span class="v3 lit" style="border-color:var(--agua)">se detectan y reciben respuesta</span></div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 4 falla,</b> la gente ve las bardas pero no tiene a quién decirle, o le dice y no pasa nada: «se detecta y responde» se apaga, la confianza que construyó el 1 se desperdicia, y los candados del 2 y las reglas del 3 se quedan en papel.</p>
-      <p class="lede">Que un reporte le llegue a alguien que vaya, revise y conteste, y que haya gente del valle recorriendo sus bordes: el comité de vigilancia que ya pedía el EURC, repartido por ecotono.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que un reporte le llegue a alguien que vaya, revise y conteste, y que haya gente del valle recorriendo sus bordes: el comité de vigilancia que ya pedía el EURC, repartido por ecotono.</p>
       <ul class="entrega" style="--c:var(--agua)">
         <li>Formulario con folio y un protocolo de siete pasos: acuse en 24 horas, visita en 15 días hábiles, aviso a quien reportó cuando se cierra, informe cada tres meses. Arranca en marzo de 2027.</li>
         <li>Una verificadora nombrada por el cabildo, con nombramiento que aguante el cambio de gobierno; capacitación en tres tiempos: funcionarios, cabildo, ejidos y gente.</li>
@@ -529,18 +754,24 @@ h1,h2,h3{text-wrap:balance;margin:0}
       </ul>
       <div class="feeds">Necesita del <span class="chip c1">1</span> (confianza para reportar) y del <span class="chip c3">3</span> (formatos, tabulador y el sueldo de la verificadora).</div>
       <div class="row"><button class="btn ghost" type="button" data-open="c4">Ahondar en el componente 4</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 8 C5 -->
     <section class="step" data-id="c5" data-title="Componente 5 · Parcela que conviene" data-comp="c5">
-      <div class="comp-head"><div class="badge" style="background:var(--campo)">5</div><div><div class="frente convenir">Convenir</div><h2 style="margin:0">Parcela que conviene</h2></div></div>
-      <div class="mini" style="--c:var(--campo)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--campo)">5</div><div><div class="frente convenir">Convenir</div><h2 style="margin:0">Parcela que conviene</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--campo)">
         <div class="mnode me"><b>5 · Parcela que conviene</b>predial, mercados, apoyos frutícolas</div><div class="marrow"></div>
         <div class="mnode"><b>Convenir</b>que la parcela rinda más que el lote</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b><span class="v2 lit" style="border-color:var(--campo)">conviene vivir de la agricultura</span></div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 5 falla,</b> «conviene vivir de la agricultura» se apaga: los candados del 2 y las reglas del 3 se sienten como castigo sin salida, crece la presión para echarlos atrás, y se viene abajo el supuesto de que vender no deja más que sembrar.</p>
-      <p class="lede">Que quedarse con la parcela convenga más que venderla: menos predial, mercados para lo que se cosecha y apoyos para frutales.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que quedarse con la parcela convenga más que venderla: menos predial, mercados para lo que se cosecha y apoyos para frutales.</p>
       <ul class="entrega" style="--c:var(--campo)">
         <li>Descuento en el predial para las parcelas que siguen produciendo dentro del polígono, en la misma Ley de Ingresos 2027.</li>
         <li>Padrón de productores por distrito de riego y una ventanilla en el campus, con servicio social, para armar las solicitudes de apoyo. Febrero de 2027.</li>
@@ -548,55 +779,79 @@ h1,h2,h3{text-wrap:balance;margin:0}
       </ul>
       <div class="feeds">Necesita del <span class="chip c2">2</span> y del <span class="chip c3">3</span>: cuando lotificar deja de ser la salida fácil, producir vuelve a competir.</div>
       <div class="row"><button class="btn ghost" type="button" data-open="c5">Ahondar en el componente 5</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 9 C6 -->
     <section class="step" data-id="c6" data-title="Componente 6 · Conducción y custodia" data-comp="c6">
-      <div class="comp-head"><div class="badge" style="background:var(--fg-soft)">6</div><div><div class="frente base">Base de los cinco</div><h2 style="margin:0">Conducción y custodia</h2></div></div>
-      <div class="mini" style="--c:var(--fg-soft)">
+      <div class="head">
+        <div class="comp-head"><div class="badge" style="background:var(--fg-soft)">6</div><div><div class="frente base">Base de los cinco</div><h2 style="margin:0">Conducción y custodia</h2></div></div>
+      </div>
+      <div class="vis">
+        <div class="mini" style="--c:var(--fg-soft)">
         <div class="mnode me"><b>6 · Conducción y custodia</b>mesa, monitoreo, transición, custodia</div><div class="marrow"></div>
         <div class="mnode"><b>Sostiene a 1, 2, 3, 4 y 5</b>alguien conduce, mide y entrega</div><div class="marrow"></div>
         <div class="mnode"><b>Propósito</b>el valle se sigue cuidando después de marzo de 2028</div>
       </div>
       <p class="failtext" hidden data-failtext><b>Si el 6 falla,</b> nadie mide, nadie entrega y nadie ratifica: en marzo de 2028 se apagan los cinco a la vez, la verificadora se queda sin partida y las marcas sin quien las reponga.</p>
-      <p class="lede">Que alguien lleve el timón, mida y entregue, y que lo construido no se caiga cuando se acabe el dinero del FONFIVE.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Que alguien lleve el timón, mida y entregue, y que lo construido no se caiga cuando se acabe el dinero del FONFIVE.</p>
       <ul class="entrega" style="--c:var(--fg-soft)">
         <li>Una mesa con municipio, dependencias, ejidos, comunidad y UAQ que se junta cada cuatro meses, tres veces al año, con el Laboratorio llevando la minuta, y cada indicador con nombre y fecha.</li>
         <li>Una revisión a medio camino en junio de 2027, para entregársela al equipo que gane la elección antes de que tome posesión.</li>
         <li>Un plan de custodia: quién se queda con las marcas, las apps, el WhatsApp, el formulario, el padrón y la red de vigías; fondos gestionados con la cartera del Plan Guía; y una propuesta de figura permanente para cuidar el paisaje agrícola.</li>
       </ul>
       <div class="row"><button class="btn ghost" type="button" data-open="c6">Ahondar en el componente 6</button><button class="fbtn" type="button" data-fail>¿Y si falla?</button></div>
+      </div>
     </section>
 
     <!-- 10 Propósito sostenido -->
-    <section class="step" data-id="proposito" data-title="Cómo se sostiene el propósito">
-      <div class="eyebrow">4 · La cadena hasta el propósito</div>
+    <section class="step tb" data-id="proposito" data-title="Cómo se sostiene el propósito">
+      <div class="head">
+        <div class="eyebrow">4 · La cadena hasta el propósito</div>
       <h2>Tres verbos, seis componentes</h2>
-      <p class="big lit">Su gente <span class="v1">conoce y valora sus ecotonos</span>, <span class="v2">conviene vivir de la agricultura</span>, y los cambios irregulares <span class="v3">se detectan antes de consolidarse y reciben respuesta</span>.</p>
-      <div class="rows">
+      </div>
+      <div class="body">
+        <p class="big lit">Su gente <span class="v1">conoce y valora sus ecotonos</span>, <span class="v2">conviene vivir de la agricultura</span>, y los cambios irregulares <span class="v3">se detectan antes de consolidarse y reciben respuesta</span>.</p>
+      </div>
+      <div class="vis">
+        <div class="rows">
         <div><div class="bs"><span class="b" style="background:var(--amber);color:#1E2B27">1</span></div><div class="tx" style="--k:var(--amber)">Valorar → <em>conoce y valora</em>. Sin el 1 nadie reporta y las reglas se quedan en papel.</div></div>
         <div><div class="bs"><span class="b" style="background:var(--agua)">2</span><span class="b" style="background:var(--agua)">3</span><span class="b" style="background:var(--agua)">4</span></div><div class="tx" style="--k:var(--agua)">Vigilar y responder → <em>se detecta y responde</em>. Candados en el ejido, consecuencias en el municipio y un reporte que alguien contesta.</div></div>
         <div><div class="bs"><span class="b" style="background:var(--campo)">5</span></div><div class="tx" style="--k:var(--campo)">Convenir → <em>conviene</em>. Con el 2 y el 3 cerrando la puerta a la lotificación, la parcela que rinde gana.</div></div>
         <div><div class="bs"><span class="b" style="background:var(--fg-soft)">6</span></div><div class="tx" style="--k:var(--fg-soft)"><b>Sostiene a los cinco.</b> Una mesa que lleva el timón, indicadores con dueño y alguien que cuide todo después de 2028.</div></div>
       </div>
       <p class="hint">Cómo se apoyan unos en otros (1 y 3 le sirven al 4; 2 y 3 le sirven al 5) está dibujado en el esquema completo. En cada componente, el botón «¿Y si falla?» muestra qué se cae con él.</p>
+      </div>
     </section>
 
     <!-- 11 Fin -->
     <section class="step" data-id="fin" data-title="El fin">
-      <div class="eyebrow">5 · El fin (a lo que contribuimos)</div>
+      <div class="head">
+        <div class="eyebrow">5 · El fin (a lo que contribuimos)</div>
       <h2>Que el valle siga siendo valle en 2045</h2>
-      <figure class="photo"><img src="img/fin-parcela-acequia-atardecer.jpg" alt="Una parcela sembrada junto a una acequia, con los árboles y los cerros del valle de Concá al atardecer"><figcaption>Una parcela de riego del valle, con su acequia, al atardecer. Esto es lo que queremos seguir viendo.</figcaption></figure>
-      <p class="big">Contribuir a que el valle de Concá conserve viva su agricultura de riego, sus manantiales, su río y sus ecotonos, y a que su gente viva de ellos y decida cómo crece el valle.</p>
+      </div>
+      <div class="vis">
+        <figure class="photo"><img src="img/fin-parcela-acequia-atardecer.jpg" alt="Una parcela sembrada junto a una acequia, con los árboles y los cerros del valle de Concá al atardecer"><figcaption>Una parcela de riego del valle, con su acequia, al atardecer. Esto es lo que queremos seguir viendo.</figcaption></figure>
+      </div>
+      <div class="body">
+        <p class="big">Contribuir a que el valle de Concá conserve viva su agricultura de riego, sus manantiales, su río y sus ecotonos, y a que su gente viva de ellos y decida cómo crece el valle.</p>
       <p class="lede">Esa es la visión del Plan Guía 2045, y no depende solo de nosotros; por eso decimos «contribuir». Lo que sí vamos a medir cada año: cuántas hectáreas del polígono se vuelven lotes (que sean cada vez menos), cuánto verde queda en los bordes, cuánta tierra sigue sembrada, y que El Abanico y Los Nacimientos sigan protegidos.</p>
+      </div>
     </section>
 
     <!-- 12 Cimiento -->
-    <section class="step" data-id="cimiento" data-title="El cimiento: supuestos">
-      <div class="eyebrow">6 · El cimiento</div>
+    <section class="step tb" data-id="cimiento" data-title="El cimiento: supuestos">
+      <div class="head">
+        <div class="eyebrow">6 · El cimiento</div>
       <h2>Lo que tiene que salir bien y no está en nuestras manos</h2>
-      <p class="lede">Toca cada uno para ver qué hacemos si falla.</p>
-      <div class="sups" id="sups">
+      </div>
+      <div class="body">
+        <p class="lede">Toca cada uno para ver qué hacemos si falla.</p>
+      </div>
+      <div class="vis">
+        <div class="sups" id="sups">
         <button class="sup" type="button"><span class="tag">SUPUESTO</span><div class="q">Que la autoridad no suelte quién reportó.</div><div class="a">Si falla: aviso de privacidad y un dictamen de la Unidad de Transparencia que diga qué datos son públicos y cuáles no; los nombres de los vigías nunca entran a la hoja de seguimiento.</div></button>
         <button class="sup" type="button"><span class="tag">SUPUESTO</span><div class="q">Que el gobierno que entra el 1 de octubre de 2027 se quede con la verificadora y el protocolo.</div><div class="a">Si falla: un nombramiento que aguante el cambio, una carpeta de entrega al equipo ganador desde julio, la revisión de medio camino como material para convencerlos, y una partida en el presupuesto 2028.</div></button>
         <button class="sup" type="button"><span class="tag">SUPUESTO</span><div class="q">Que PROFEPA, SEDESU y CONANP contesten en el plazo que se acordó.</div><div class="a">Si falla: el acuerdo de la mesa fija acuses y 60 días; el informe de cada tres meses dice cuántas denuncias siguen sin respuesta y de quién.</div></button>
@@ -604,13 +859,17 @@ h1,h2,h3{text-wrap:balance;margin:0}
         <button class="sup" type="button"><span class="tag">SUPUESTO</span><div class="q">Que vender para cabañas no deje más que sembrar con mercado y apoyos.</div><div class="a">Si falla: el conteo de anuncios de venta cada seis meses lo detecta; el 5 ajusta mercados y apoyos; los candados del 2 y el tabulador del 3 hacen que lotificar salga caro.</div></button>
         <button class="sup" type="button"><span class="tag">SUPUESTO</span><div class="q">Que haya dónde construir, legal, para la familia que crece.</div><div class="a">Si falla, el reporte se vuelve un arma entre vecinos. Por eso el mapa de «dónde sí» (Concá Norte, El Toril, los baldíos que ya tienen servicios) y la visita para orientar antes de levantar cualquier acta.</div></button>
       </div>
+      </div>
     </section>
 
     <!-- 13 Esquema completo -->
-    <section class="step" data-id="esquema" data-title="El esquema completo" data-wide="1">
-      <div class="eyebrow">7 · Para consultar</div>
+    <section class="step one" data-id="esquema" data-title="El esquema completo" data-wide="1">
+      <div class="head">
+        <div class="eyebrow">7 · Para consultar</div>
       <h2>El esquema completo</h2>
-      <p class="lede">Toda la lógica en una sola imagen: el fin, el propósito, los tres frentes, los seis componentes y el cimiento. Las líneas continuas son lo que cada componente entrega hacia arriba; las punteadas, de qué depende. Toca cualquier componente para abrir su ficha.</p>
+      </div>
+      <div class="body">
+        <p class="lede">Toda la lógica en una sola imagen: el fin, el propósito, los tres frentes, los seis componentes y el cimiento. Las líneas continuas son lo que cada componente entrega hacia arriba; las punteadas, de qué depende. Toca cualquier componente para abrir su ficha.</p>
       <div class="legend"><span><i></i> entrega hacia arriba</span><span><i class="x"></i> depende de</span></div>
       <div class="chain" id="chain">
           <svg class="links" id="links" aria-hidden="true"></svg>
@@ -649,14 +908,20 @@ h1,h2,h3{text-wrap:balance;margin:0}
           </div>
         </div>
       <p class="small" style="margin-top:18px">El detalle fino (indicadores, medios de verificación, costos y actividades) está en el marco lógico en Word, versión 3. Esta página es para entender la lógica; aquél, para trabajarla.</p>
+      </div>
     </section>
 
     <!-- 14 Equipo -->
     <section class="step" data-id="equipo" data-title="Para el equipo">
-      <div class="eyebrow">8 · Antes de la reunión</div>
+      <div class="head">
+        <div class="eyebrow">8 · Antes de la reunión</div>
       <h2>¿Estamos en el mismo canal?</h2>
-      <figure class="photo"><img src="img/taller-manos-sobre-el-mapa.jpg" alt="Varias personas inclinadas sobre un mapa del valle, señalando con plumones de colores"><figcaption>Como en los talleres: todos sobre el mismo mapa.</figcaption></figure>
-      <p class="lede" id="teamlede">Tres preguntas. Lo que respondas se guarda aquí mismo y lo ven los demás del equipo, para llegar a la reunión con todo a la vista.</p>
+      </div>
+      <div class="vis">
+        <figure class="photo"><img src="img/taller-manos-sobre-el-mapa.jpg" alt="Varias personas inclinadas sobre un mapa del valle, señalando con plumones de colores"><figcaption>Como en los talleres: todos sobre el mismo mapa.</figcaption></figure>
+      </div>
+      <div class="body">
+        <p class="lede" id="teamlede">Tres preguntas. Lo que respondas se guarda aquí mismo y lo ven los demás del equipo, para llegar a la reunión con todo a la vista.</p>
       <div class="qs" id="qs">
         <div class="q"><label for="nombre">Tu nombre (para que el equipo sepa quién responde)</label><input id="nombre" type="text" maxlength="80" autocomplete="name" placeholder="Nombre o como te conocen en el equipo"></div>
         <div class="q"><label for="q1">1. ¿La apuesta (el propósito) dice lo que andamos buscando? ¿Qué le sobra, qué le falta?</label><textarea id="q1"></textarea></div>
@@ -676,6 +941,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
         <div class="ans" id="ans"></div>
       </div>
       <p class="hint">Laboratorio de Desarrollo Rural · Facultad de Ciencias Naturales, UAQ Campus Concá · Grupo Colegiado Ciudad, Territorio e Investigación Proyectual, FI · Marcas en el territorio, FONFIVE 2026.</p>
+      </div>
     </section>
   </div>
 </main>
@@ -805,12 +1071,29 @@ h1,h2,h3{text-wrap:balance;margin:0}
 
 <nav class="nav" aria-label="Navegación entre pasos">
   <div class="in">
-    <button class="nbtn" id="prev" type="button">← Anterior</button>
+    <button class="nbtn prev" id="prev" type="button">← Anterior</button>
     <div class="mid" id="navmid"></div>
     <button class="nbtn next" id="next" type="button">Siguiente →</button>
   </div>
 </nav>
 
+<div class="chooser" id="chooser" role="dialog" aria-modal="true" aria-labelledby="chooser-t" hidden>
+  <div class="chooser-in">
+    <div class="eyebrow">Antes de empezar</div>
+    <h2 id="chooser-t">¿Dónde lo estás viendo?</h2>
+    <p class="small">La página se acomoda distinto en un celular y en una pantalla grande. Puedes cambiarlo cuando quieras con el botón de arriba.</p>
+    <div class="choices">
+      <button type="button" class="choice" data-mode="movil">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="3" width="22" height="42" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><line x1="20" y1="8" x2="28" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="39" r="1.8" fill="currentColor"/></svg>
+        <b>En el celular</b><span>Vertical u horizontal, con el pulgar: desliza para avanzar.</span><em class="sug" hidden>Parece que estás aquí</em>
+      </button>
+      <button type="button" class="choice" data-mode="pantalla">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="7" width="42" height="27" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 42h16M24 34v8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <b>En una pantalla grande</b><span>Computadora, tele o proyector: cada paso como una lámina, con teclado.</span><em class="sug" hidden>Parece que estás aquí</em>
+      </button>
+    </div>
+  </div>
+</div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="Ficha del componente" aria-hidden="true">
   <button class="close" id="close" type="button" aria-label="Cerrar">✕</button>
@@ -820,6 +1103,21 @@ h1,h2,h3{text-wrap:balance;margin:0}
 
 <script>
 (function(){
+  /* ───── modo: celular o pantalla ───── */
+  const html=document.documentElement, chooser=document.getElementById('chooser');
+  const guess=()=> (matchMedia('(pointer:coarse)').matches && Math.min(innerWidth,innerHeight)<700) ? 'movil' : 'pantalla';
+  let MODE='';
+  function setMode(m,remember){ MODE=(m==='movil'||m==='pantalla')?m:guess(); html.setAttribute('data-mode',MODE); if(remember){ try{ localStorage.setItem('tdc3-modo',MODE); }catch(e){} } document.dispatchEvent(new Event('modechange')); }
+  function openChooser(){ const g=guess(); chooser.querySelectorAll('.choice').forEach(c=>{ const on=c.dataset.mode===g; c.classList.toggle('sug-on',on); c.querySelector('.sug').hidden=!on; }); chooser.hidden=false; const f=chooser.querySelector('.choice.sug-on')||chooser.querySelector('.choice'); if(f) f.focus(); }
+  function closeChooser(){ chooser.hidden=true; }
+  chooser.querySelectorAll('.choice').forEach(c=>c.addEventListener('click',()=>{ setMode(c.dataset.mode,true); closeChooser(); }));
+  document.getElementById('modebtn').addEventListener('click',openChooser);
+  { const q=new URLSearchParams(location.search).get('modo'); let saved=''; try{ saved=localStorage.getItem('tdc3-modo')||''; }catch(e){}
+    if(q==='celular'||q==='movil') setMode('movil',true); else if(q==='pantalla') setMode('pantalla',true);
+    else if(saved) setMode(saved,false); else { setMode(guess(),false); openChooser(); } }
+  /* pantalla completa (modo pantalla) */
+  document.getElementById('fsbtn').addEventListener('click',()=>{ if(document.fullscreenElement){ document.exitFullscreen&&document.exitFullscreen(); } else if(html.requestFullscreen){ html.requestFullscreen().catch(()=>{}); } });
+
   const COMP = {
     c1:{n:'1',name:'Valle conocido',frente:'Valorar',color:'var(--amber)',ink:'#1E2B27',
       enun:'El PMDU se conoce, la gente se lo apropia y las marcas hacen visible el valor del valle y sus cuatro ecotonos: agua, campo, cerro y pueblo.',
@@ -919,7 +1217,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
     '<b>Y una base.</b> Una mesa donde se sientan el municipio, los ejidos, las dependencias y la gente; que lleva el timón, mide si funciona y deja cada cosa a cargo de alguien cuando se acabe el dinero del proyecto.',
     '<b>Eso es todo.</b> La apuesta se resume en una frase: <em>el valle se cuida desde adentro</em>. Y si lo logramos, ponemos nuestra parte para que en 2045 el valle siga siendo valle: con sus parcelas regadas, su río, sus manantiales y su gente viviendo de ellos.'
   ];
-  document.getElementById('balanza').addEventListener('click', e=>{
+  document.addEventListener('click', e=>{
     const t=e.target.closest('[data-jump]'); if(!t) return;
     const k=steps.findIndex(x=>x.dataset.id===t.dataset.jump); if(k>=0) go(k,true);
   });
@@ -963,19 +1261,21 @@ h1,h2,h3{text-wrap:balance;margin:0}
     const bal=s.querySelector('#balanza');
     if(bal){ ['b1','b2','b3','b4','b5'].forEach((c,k)=>bal.classList.toggle(c, state.beat>=k+1));
       const cap=document.getElementById('sumcap'); cap.innerHTML=SUMCAP[Math.min(state.beat,SUMCAP.length-1)]; cap.classList.remove('pop'); void cap.offsetWidth; cap.classList.add('pop');
-      Array.from(document.getElementById('sumsteps').children).forEach((d,k)=>d.classList.toggle('on',k<=state.beat)); }
+      Array.from(document.getElementById('sumsteps').children).forEach((d,k)=>d.classList.toggle('on',k<=state.beat));
+      Array.from(document.getElementById('sumlegend').children).forEach((d,k)=>d.classList.toggle('on', state.beat>=k+1)); }
   }
   function restartMini(s){ const m=s.querySelector('.mini'); if(!m) return; const clone=m.cloneNode(true); clone.classList.remove('fail'); m.replaceWith(clone); const ft=s.querySelector('[data-failtext]'); if(ft) ft.hidden=true; const fb=s.querySelector('[data-fail]'); if(fb){ fb.classList.remove('on'); fb.textContent='¿Y si falla?'; } }
   function render(){
     steps.forEach((s,i)=>s.classList.toggle('cur', i===state.i));
     Array.from(dots.children).forEach((d,i)=>{ d.classList.toggle('cur', i===state.i); d.classList.toggle('seen', i<state.i); });
     counter.textContent=`${state.i+1} / ${steps.length}`;
+    document.getElementById('progress').style.width=((state.i+1)/steps.length*100)+'%';
     const s=steps[state.i];
     navmid.innerHTML=`<b>${s.dataset.title}</b>`+(state.i<steps.length-1?` · luego: ${steps[state.i+1].dataset.title}`:'');
     prev.disabled=state.i===0; next.textContent=state.i===steps.length-1?'Volver al inicio':'Siguiente →';
     stagein.classList.toggle('wide', s.dataset.wide==='1');
     schemabtn.classList.toggle('on', state.i===SCHEMA); schemabtn.setAttribute('aria-pressed', String(state.i===SCHEMA));
-    schemabtn.textContent = state.i===SCHEMA ? 'Volver al recorrido' : 'Esquema completo';
+    schemabtn.textContent = state.i===SCHEMA ? (MODE==='movil'?'Recorrido':'Volver al recorrido') : (MODE==='movil'?'Esquema':'Esquema completo');
     placeVisual(); applyBeats(); restartMini(s);
     if(state.i===SCHEMA){ requestAnimationFrame(()=>{ drawLinks(); setTimeout(drawLinks,350); }); }
     try{ history.replaceState(null,'','#'+s.dataset.id); }catch(e){}
@@ -993,6 +1293,12 @@ h1,h2,h3{text-wrap:balance;margin:0}
     if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); forward(); }
     if(e.key==='ArrowLeft'){ e.preventDefault(); back(); }
   });
+
+  /* deslizar con el dedo en el celular */
+  { let sx=0, sy=0, st=0, ok=false;
+    document.addEventListener('touchstart',e=>{ if(MODE!=='movil'||e.touches.length!==1) { ok=false; return; } const t=e.target; ok=!(t.closest&&t.closest('textarea,input,.drawer,.chain,.sups,.chooser')); sx=e.touches[0].clientX; sy=e.touches[0].clientY; st=Date.now(); },{passive:true});
+    document.addEventListener('touchend',e=>{ if(!ok) return; ok=false; const t=e.changedTouches[0]; const dx=t.clientX-sx, dy=t.clientY-sy; if(Date.now()-st>700) return; if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.6) return; if(dx<0) forward(); else back(); },{passive:true}); }
+  document.addEventListener('modechange',()=>{ render(); });
 
   /* ecotones */
   const ECOPHOTO = {

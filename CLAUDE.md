@@ -24,6 +24,21 @@ original `ecotonos-teoria-del-cambio.zip`, carpeta `docs/`; no están aquí).
   https://script.google.com/macros/s/AKfycbx_vPF5igLudRladfnj68WJ4xvApX0DeHxDBRwsgtB1OIFbrtKHGkViSvES0SMHv_q8Ag/exec
 - `.nojekyll` — para que GitHub Pages sirva los archivos tal cual.
 
+## Dos modos: celular y pantalla (27 oct 2026, pedido de Eduardo)
+
+- Al abrir, una pantalla pregunta «¿Dónde lo estás viendo?» (celular / pantalla grande); se guarda en
+  localStorage `tdc3-modo` y se cambia con el botón de icono en la cabecera. `?modo=celular` o `?modo=pantalla`
+  lo fuerzan. El `<html>` lleva `data-mode="movil|pantalla"`.
+- Cada paso quedó en tres bloques: `.head` (título), `.vis` (lo que se ve) y `.body` (lo que se lee); `.tb` cuando
+  el texto va antes del visual, `.one` para portada y esquema (una sola columna).
+- Pantalla: lámina a dos columnas (visual izquierda, título y texto derecha), tipografía que crece con el ancho,
+  botón de pantalla completa, cadena corta en vertical.
+- Celular vertical: pila con visuales a todo lo ancho, barra de progreso, botón «Siguiente» grande, deslizar
+  con el dedo para avanzar, ficha como hoja que sube desde abajo, y la balanza con números dentro y leyenda afuera.
+- Celular horizontal (alto ≤ 520 px): visual a la izquierda pegado arriba, texto a la derecha, todo compacto.
+  PENDIENTE: no se alcanzó a probar en el navegador; revisar primero. Tampoco se revisó el modo oscuro
+  después del cambio ni el paso del equipo en celular.
+
 ## Cómo funciona la parte del equipo (último paso de la página)
 
 - Campo de nombre libre + tres preguntas (q1, q2, q3). Decisión de Eduardo: nombre libre, sin cuenta.
