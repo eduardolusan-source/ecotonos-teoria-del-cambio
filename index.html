@@ -506,6 +506,7 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
 
 <main class="stage">
   <div class="in" id="stagein">
+    <!-- ═══ CONTENIDO · los pasos del recorrido. Cada <section class="step"> es una pantalla: .head (título), .vis (lo que se ve), .body (lo que se lee). El orden del DOM es el orden del recorrido. ═══ -->
 
     <!-- 0 Portada -->
     <section class="step one" data-id="inicio" data-title="Inicio">
@@ -946,7 +947,7 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   </div>
 </main>
 
-<!-- visuals that travel between steps -->
+<!-- ═══ VISUALES VIAJEROS · dibujos que se montan en el paso que los pide (data-visual="valley" | "parcel") ═══ -->
 <div id="visuals" hidden>
   <div id="valleybox">
     <svg class="valley" id="valley" viewBox="0 0 1200 400" role="img" aria-label="Sección esquemática del valle de Concá: cerro, Camino Real, parcelas con acequias, pueblo y carretera, río">
@@ -1118,6 +1119,19 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   /* pantalla completa (modo pantalla) */
   document.getElementById('fsbtn').addEventListener('click',()=>{ if(document.fullscreenElement){ document.exitFullscreen&&document.exitFullscreen(); } else if(html.requestFullscreen){ html.requestFullscreen().catch(()=>{}); } });
 
+
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     DATOS DEL PROYECTO · todo lo que cambia de un proyecto a otro vive aquí.
+     El resto del script es el motor (pasos, toques, modos, ficha, equipo) y no
+     necesita tocarse para un proyecto nuevo.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  // Backend: Google Apps Script (apps-script.gs) desplegado como aplicación web. Pega aquí la URL /exec.
+  // Si queda vacía, la sección del equipo no aparece y la página funciona como copia local.
+  const SHEET_API = 'https://script.google.com/macros/s/AKfycbx_vPF5igLudRladfnj68WJ4xvApX0DeHxDBRwsgtB1OIFbrtKHGkViSvES0SMHv_q8Ag/exec';
+
+  // Fichas de los componentes (se abren con «Ahondar» y desde el esquema). Claves = data-open / data-comp.
   const COMP = {
     c1:{n:'1',name:'Valle conocido',frente:'Valorar',color:'var(--amber)',ink:'#1E2B27',
       enun:'El PMDU se conoce, la gente se lo apropia y las marcas hacen visible el valor del valle y sus cuatro ecotonos: agua, campo, cerro y pueblo.',
@@ -1175,11 +1189,30 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
       mapa:false}
   };
 
+  // Texto de cada orilla del dibujo del lugar (claves = data-eco del SVG y de los botones).
   const ECO = {
     cerro:'Donde las parcelas suben al cerro: la selva baja, el Camino Real y sus puertas. Si se cuida, el monte y sus veredas siguen ahí y las parcelas no se le van encima. Es la propuesta 3 del EURC; ahí andan los vigías del cerro (componente 4).',
     pueblo:'Donde las parcelas tocan el pueblo: el anillo verde de 20 metros, los corredores y la carretera 69. Si se cuida, el pueblo crece hacia donde debe y no sobre la tierra de cultivo. Propuestas 4, 5 y 6; el mapa de «dónde sí» construir (componente 3).',
     agua:'Donde el agua toca las parcelas: la orilla del río Concá, los manantiales y las acequias. Cuidar eso es cuidar el agua con la que se riega. Propuestas 1 y 2; el comité de Los Nacimientos (componentes 2 y 4).'
   };
+
+  // Foto que aparece al tocar una orilla (opcional por orilla).
+  const ECOPHOTO = {
+    cerro:{src:'img/ecotono-cerro-parcelas-desde-selva-baja.jpg', alt:'Las parcelas del valle vistas desde la selva baja del cerro', cap:'La orilla del cerro: las parcelas vistas desde la selva baja. Foto del proyecto EURC.'},
+    agua:{src:'img/ecotono-agua-collage-corredor-rio.jpg', alt:'Collage del río Concá con sombra de árboles y niños jugando en el agua', cap:'La orilla del agua: así se imaginó el corredor del río en los talleres (propuesta 1, collage del equipo).'}
+  };
+
+  // Leyendas del paso «En un minuto», una por toque (0 = estado inicial). Admite HTML sencillo.
+  const SUMCAP = [
+    '<b>Hoy.</b> Para muchas familias del valle, el lote pesa más que la parcela: vender deja dinero rápido, y brincarse las reglas sale gratis. Así, parcela por parcela, el valle se va volviendo lotes.',
+    '<b>Primer peso.</b> Que la gente sepa qué se puede y qué no en cada parte del valle, y que le tenga cariño. Quien conoce su valle, lo defiende.',
+    '<b>Segundo peso.</b> Que brincarse la regla deje de salir gratis: el ejido pone candados a la venta en cachitos, el municipio cobra y sanciona, y un reporte le llega a alguien que va, revisa y contesta.',
+    '<b>Tercer peso.</b> Que quedarse con la parcela deje más que venderla: menos predial, un mercado para la cosecha y apoyos para sembrar frutales. Con los dos pesos anteriores puestos, este es el que inclina la balanza.',
+    '<b>Y una base.</b> Una mesa donde se sientan el municipio, los ejidos, las dependencias y la gente; que lleva el timón, mide si funciona y deja cada cosa a cargo de alguien cuando se acabe el dinero del proyecto.',
+    '<b>Eso es todo.</b> La apuesta se resume en una frase: <em>el valle se cuida desde adentro</em>. Y si lo logramos, ponemos nuestra parte para que en 2045 el valle siga siendo valle: con sus parcelas regadas, su río, sus manantiales y su gente viviendo de ellos.'
+  ];
+
+  /* ═══════════════════ fin de los datos del proyecto ═══════════════════ */
 
   /* ───── chain links (schema step) ───── */
   const EDGES = [
@@ -1208,15 +1241,6 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
     });
   }
 
-  /* ───── en un minuto ───── */
-  const SUMCAP = [
-    '<b>Hoy.</b> Para muchas familias del valle, el lote pesa más que la parcela: vender deja dinero rápido, y brincarse las reglas sale gratis. Así, parcela por parcela, el valle se va volviendo lotes.',
-    '<b>Primer peso.</b> Que la gente sepa qué se puede y qué no en cada parte del valle, y que le tenga cariño. Quien conoce su valle, lo defiende.',
-    '<b>Segundo peso.</b> Que brincarse la regla deje de salir gratis: el ejido pone candados a la venta en cachitos, el municipio cobra y sanciona, y un reporte le llega a alguien que va, revisa y contesta.',
-    '<b>Tercer peso.</b> Que quedarse con la parcela deje más que venderla: menos predial, un mercado para la cosecha y apoyos para sembrar frutales. Con los dos pesos anteriores puestos, este es el que inclina la balanza.',
-    '<b>Y una base.</b> Una mesa donde se sientan el municipio, los ejidos, las dependencias y la gente; que lleva el timón, mide si funciona y deja cada cosa a cargo de alguien cuando se acabe el dinero del proyecto.',
-    '<b>Eso es todo.</b> La apuesta se resume en una frase: <em>el valle se cuida desde adentro</em>. Y si lo logramos, ponemos nuestra parte para que en 2045 el valle siga siendo valle: con sus parcelas regadas, su río, sus manantiales y su gente viviendo de ellos.'
-  ];
   document.addEventListener('click', e=>{
     const t=e.target.closest('[data-jump]'); if(!t) return;
     const k=steps.findIndex(x=>x.dataset.id===t.dataset.jump); if(k>=0) go(k,true);
@@ -1301,10 +1325,6 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   document.addEventListener('modechange',()=>{ render(); });
 
   /* ecotones */
-  const ECOPHOTO = {
-    cerro:{src:'img/ecotono-cerro-parcelas-desde-selva-baja.jpg', alt:'Las parcelas del valle vistas desde la selva baja del cerro', cap:'La orilla del cerro: las parcelas vistas desde la selva baja. Foto del proyecto EURC.'},
-    agua:{src:'img/ecotono-agua-collage-corredor-rio.jpg', alt:'Collage del río Concá con sombra de árboles y niños jugando en el agua', cap:'La orilla del agua: así se imaginó el corredor del río en los talleres (propuesta 1, collage del equipo).'}
-  };
   const ecofig=document.getElementById('ecofig'), ecoimg=document.getElementById('ecoimg'), ecocap=document.getElementById('ecocap');
   function lightEco(k){ valley.querySelectorAll('.eco').forEach(e=>e.classList.toggle('lit', !!e.dataset.eco&&e.dataset.eco===k)); document.querySelectorAll('.ecobtn').forEach(b=>b.classList.toggle('on',b.dataset.eco===k)); ecotext.textContent=ECO[k];
     const ph=ECOPHOTO[k]; if(ph){ ecoimg.src=ph.src; ecoimg.alt=ph.alt; ecocap.textContent=ph.cap; ecofig.hidden=false; } else { ecofig.hidden=true; } }
@@ -1353,8 +1373,6 @@ html[data-mode="movil"] .parcel text[font-size="13"]{font-size:16px}
   document.getElementById('clear').addEventListener('click',()=>{ QKEYS.forEach(k=>{ document.getElementById(k).value=''; try{ localStorage.removeItem('tdc3-'+k); }catch(e){} }); toast('Respuestas borradas'); });
 
   (function team(){
-    // Backend: Google Apps Script (google/apps-script.gs) desplegado como aplicación web. Pega aquí la URL /exec.
-    const SHEET_API = 'https://script.google.com/macros/s/AKfycbx_vPF5igLudRladfnj68WJ4xvApX0DeHxDBRwsgtB1OIFbrtKHGkViSvES0SMHv_q8Ag/exec';
     if(!SHEET_API) return;
     const status=document.getElementById('teamstatus'), saveBtn=document.getElementById('save'), team=document.getElementById('team'), ans=document.getElementById('ans'), count=document.getElementById('teamcount'), reload=document.getElementById('reload'), nameEl=document.getElementById('nombre');
     team.hidden=false; saveBtn.hidden=false;
