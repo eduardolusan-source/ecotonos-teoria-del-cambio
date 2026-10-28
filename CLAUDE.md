@@ -50,14 +50,9 @@ original `ecotonos-teoria-del-cambio.zip`, carpeta `docs/`; no están aquí).
 
 1. HECHO (27 oct 2026): la prueba real pasó. Falta solo borrar las dos filas «PRUEBA Claude (borrar)» en la
    pestaña `respuestas` de la hoja de Google.
-2. Publicar: en la máquina de Eduardo `gh` ya está autenticado como `eduardolusan-source`, así que el repo
-   se puede crear y empujar desde aquí (`gh repo create ... --public --source . --push`). Nombre acordado:
-   `ecotonos-teoria-del-cambio`. A mano sería:
-     git remote add origin https://github.com/eduardolusan-source/ecotonos-teoria-del-cambio.git
-     git push -u origin main
-   Activar Pages en Settings → Pages → Deploy from a branch → main / (root).
-   URL esperada: https://eduardolusan-source.github.io/ecotonos-teoria-del-cambio/
-   Eduardo acostumbra dar un token fine-grained por chat y revocarlo al terminar.
+2. HECHO (27 oct 2026): repo público https://github.com/eduardolusan-source/ecotonos-teoria-del-cambio con
+   Pages activo desde main / (root). La página vive en
+   https://eduardolusan-source.github.io/ecotonos-teoria-del-cambio/ . Cada push a main la actualiza solo.
 3. Confirmar con el equipo que aceptan las fotos de taller con caras antes de compartir fuera.
 
 ## Qué no cambiar sin preguntar
